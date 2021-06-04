@@ -4,3 +4,8 @@ pub fn hello_world(maybe_name: Option<String>) {
         None => println!("Hello, World!"),
     }
 }
+
+pub trait IPNotifier {
+    fn notify();
+    fn notify_on_change();
+}
