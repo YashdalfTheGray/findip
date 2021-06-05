@@ -1,6 +1,6 @@
-use findiplib::hello_world;
-
 use clap::clap_app;
+
+use findip_lib::hello_world;
 
 pub fn main() {
     let matches = clap_app!(findip =>
