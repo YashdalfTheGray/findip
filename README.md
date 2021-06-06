@@ -33,3 +33,11 @@ The trait has an option to notify on some kind of schedule or notify only when t
 ## References
 
 - [Library and binary in the same Rust project](https://stackoverflow.com/questions/26946646/rust-package-with-both-a-library-and-a-binary)
+- [`Cargo.toml` format](https://doc.rust-lang.org/cargo/reference/manifest.html)
+- [`clap` docs](https://docs.rs/clap/2.33.3/clap/)
+- [`cron_parser` docs](https://docs.rs/cron-parser/0.7.9/cron_parser/)
+- [`reqwest` docs](https://docs.rs/reqwest/0.11.3/reqwest/index.html)
+- IP Address finder "endpoints"
+  - https://api.ipify.org/ (plaintext)
+  - https://diagnostic.opendns.com/myip (plaintext)
+  - https://ipinfo.io/ip (HTML)
