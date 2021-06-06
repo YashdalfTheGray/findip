@@ -11,6 +11,8 @@ There are a couple of commands that are noteworthy since this package contains a
 - `cargo build --lib` will build a development version of the library portion
 - `cargo build --lib --release` will build a release version of the library portion
 
+The built binaries can be found within the target folder, under either `debug` for dev builds or `release` for release builds. The binary is named `findip`.
+
 Because the library is used by the binary in this project, building the binary also builds the library parts of the code but, in case building both is necessary for some reason, a simple `cargo build` will build both things. And sticking the `--release` flag after the command will build everything for release.
 
 ## What is this?
