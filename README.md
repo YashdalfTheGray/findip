@@ -2,6 +2,17 @@
 
 A Rust utility that looks for changes in the dynamic IP and tells someone about it
 
+## Development
+
+There are a couple of commands that are noteworthy since this package contains a binary as well as a library
+
+- `cargo run --bin findip -- <arguments>` will build and run the binary with the given arguments
+- `cargo build --bin findip --release` will build an executable ready to be published
+- `cargo build --lib` will build a development version of the library portion
+- `cargo build --lib --release` will build a release version of the library portion
+
+Because the library is used by the binary in this project, building the binary also builds the library parts of the code but, in case building both is necessary for some reason, a simple `cargo build` will build both things. And sticking the `--release` flag after the command will build everything for release.
+
 ## What is this?
 
 It is a utility that finds the external IP address of the node that it is running on. It's supposed to be as lightweight as possible and supposed to run as a service or Docker container.
