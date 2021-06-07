@@ -1,11 +1,11 @@
-use clap::clap_app;
+use clap::{clap_app, crate_authors};
 
 use findip_lib::hello_world;
 
 pub fn main() {
     let matches = clap_app!(findip =>
         (version: "1.0.0")
-        (author: "Yash Kulshrestha (@YashdalfTheGray)")
+        (author: crate_authors!(", "))
         (about: "A lightweight utility that finds out and reports public IP addresses")
         (@arg cron_pattern: -c --cron <PATTERN> "A cron pattern dictating how often to check the IP.")
         (@arg notifier_strategy: -n --notifier <STRATEGY> "The notifier strategy to use; one of stdout, textfile, s3, rest.")
