@@ -1,8 +1,11 @@
 use clap::{clap_app, crate_authors};
+use dotenv::dotenv;
 
 use findip_lib::hello_world;
 
 pub fn main() {
+    dotenv().ok();
+
     let matches = clap_app!(findip =>
         (version: "1.0.0")
         (author: crate_authors!(", "))
