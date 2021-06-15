@@ -1,8 +1,12 @@
 use std::net::{IpAddr, Ipv4Addr};
 
-use types::NotifierStrategy;
-
-pub mod types;
+#[derive(PartialEq, Debug, Clone)]
+pub enum NotifierStrategy {
+    File,
+    Stdout,
+    Endpoint,
+    S3,
+}
 
 pub fn hello_world(maybe_name: Option<String>) {
     match maybe_name {
@@ -16,6 +20,6 @@ pub trait IPNotifier {
     fn notify_on_change();
 }
 
-pub fn find_external_ip() -> std::net::IpAddr {
+pub fn find_external_ip(_notify_method: NotifierStrategy) -> std::net::IpAddr {
     return IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1));
 }
