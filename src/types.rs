@@ -1,9 +1,11 @@
-use std::str::FromStr;
+use clap::arg_enum;
 
-#[derive(Debug, Clone)]
-pub enum NotifierStrategy {
-    File,
-    Stdout,
-    Endpoint,
-    S3,
+arg_enum! {
+    #[derive(PartialEq, Debug, Clone)]
+    pub enum NotifierStrategy {
+        File,
+        Stdout,
+        Endpoint,
+        S3,
+    }
 }
