@@ -2,7 +2,7 @@ use std::net::{IpAddr, Ipv4Addr};
 
 use types::NotifierStrategy;
 
-mod types;
+pub mod types;
 
 pub fn hello_world(maybe_name: Option<String>) {
     match maybe_name {
