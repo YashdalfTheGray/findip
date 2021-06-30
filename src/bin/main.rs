@@ -1,4 +1,4 @@
-use clap::{clap_app, crate_authors, Arg};
+use clap::{clap_app, crate_authors};
 use dotenv::dotenv;
 
 use findip_lib::hello_world;
@@ -10,15 +10,8 @@ pub fn main() {
         (version: "1.0.0")
         (author: crate_authors!(", "))
         (about: "A lightweight utility that finds out and reports public IP addresses")
-        (@arg notifier_strategy: -n --notifier <STRATEGY> "The notifier strategy to use; one of stdout, textfile, s3, rest.")
+        (@arg config_file_name: -c --config-file-name <FILE_NAME> "A configuration file that provides information on how to notify.")
         (@arg verbose: -v --verbose +multiple "Enable verbose mode, prints debug information.")
-    ).arg(
-        Arg::with_name("cron_pattern")
-            .short("c")
-            .long("cron")
-            .value_name("PATTERN")
-            .help("A cron pattern dictating how often to check the IP.")
-            .takes_value(true)
     )
     .get_matches();
 
