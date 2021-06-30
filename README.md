@@ -24,8 +24,8 @@ It is a utility that finds the external IP address of the node that it is runnin
 It, yeah, it probably does. But I wanted to start this project because of a few reasons
 
 - There is this new Rust AWS SDK to experiment with
-- I wanted to build something that finds the external ID and figure out how to do it
-- I wanted to ship a library and an executable all in one project
+- I wanted to build something that finds the external IP and figure out how to do it
+- I wanted to ship a library and an executable all in one project, which I haven't done with Rust yet
 
 ## Design
 
