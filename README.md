@@ -49,6 +49,31 @@ It also includes details about configuring the notifiers, like the credentials t
 
 Eventually, this config file will be able to support multiple notifiers running concurrently but for now, you're limited to choosing one.
 
+## Config file structure
+
+```yaml
+---
+cron: "0 0 */12 ? * *"
+notifyOnChangeOnly: false
+notifiers:
+  - type: s3
+    properties:
+      assumeRoleArn: roleArn
+      region: us-west-2
+      bucketName: bucketName
+  - type: text-file
+    properties:
+      filePath: testfile.log
+      overwrite: false
+  - type: rest
+    properties:
+      endpoint: https://something.com/some/api
+      headers:
+        Content-Type: application/json
+        Authorization: "Bearer mysecrettoken"
+  - type: stdout
+```
+
 ## References
 
 - [Library and binary in the same Rust project](https://stackoverflow.com/questions/26946646/rust-package-with-both-a-library-and-a-binary)
