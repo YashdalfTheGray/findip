@@ -51,6 +51,10 @@ Eventually, this config file will be able to support multiple notifiers running 
 
 ## Config file structure
 
+### Example with all the notifiers
+
+As stated above, at least for now, this config file is not valid because it uses more than one notifier but it is useful as a way to show how the config file is structured and what options are available. This example notifies every 12 hours and even if there isn't a change to the IP address.
+
 ```yaml
 ---
 cron: "0 0 */12 ? * *"
@@ -71,6 +75,18 @@ notifiers:
       headers:
         Content-Type: application/json
         Authorization: "Bearer mysecrettoken"
+  - type: stdout
+```
+
+### Simplest valid example
+
+This example outputs the IP address to stdout and only prints out the IP address to stdout when a change is detected. It checks everyday at 6am.
+
+```yaml
+---
+cron: "0 0 6 * * ?"
+notifyOnChangeOnly: true
+notifiers:
   - type: stdout
 ```
 
