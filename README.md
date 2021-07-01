@@ -43,6 +43,12 @@ There are a few built in notifiers
 
 The trait has an option to notify on some kind of schedule or notify only when there is a change.
 
+The executable takes a YAML based config file using the `--config-file-name` or `-c` flag. This config file declares how often the check is run, what notifier is used and whether the notifier runs only when changes are detected or every time.
+
+It also includes details about configuring the notifiers, like the credentials to use for S3, the file name to write to in case of the text file notifier, or the REST API endpoint to call with the detials.
+
+Eventually, this config file will be able to support multiple notifiers running concurrently but for now, you're limited to choosing one.
+
 ## References
 
 - [Library and binary in the same Rust project](https://stackoverflow.com/questions/26946646/rust-package-with-both-a-library-and-a-binary)
