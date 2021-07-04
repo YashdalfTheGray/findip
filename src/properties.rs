@@ -20,5 +20,6 @@ pub struct S3Properties {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RestProperties {
     endpoint: url::Url,
+    #[serde(default)]
     headers: HashMap<String, String>,
 }
