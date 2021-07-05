@@ -23,3 +23,11 @@ pub struct RestProperties {
     #[serde(default)]
     headers: HashMap<String, String>,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
+pub struct ConfigFile<T> {
+    cron: String,
+    notify_on_change_only: bool,
+    notifiers: Vec<T>,
+}
