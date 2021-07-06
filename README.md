@@ -97,6 +97,8 @@ notifiers:
 - [`clap` docs](https://docs.rs/clap/2.33.3/clap/)
 - [`cron_parser` docs](https://docs.rs/cron-parser/0.7.9/cron_parser/)
 - [`reqwest` docs](https://docs.rs/reqwest/0.11.3/reqwest/index.html)
+- [`serde` docs](https://serde.rs/)
+- [`serde-yaml` docs](https://docs.rs/serde_yaml/0.8.17/serde_yaml/)
 - IP Address finder "endpoints"
   - https://api.ipify.org/ (plaintext)
   - https://diagnostic.opendns.com/myip (plaintext)
