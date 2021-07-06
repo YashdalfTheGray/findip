@@ -1,6 +1,13 @@
 use serde::Deserialize;
 use std::{collections::HashMap, path::Path};
 
+pub trait Notifier {
+    type PropType;
+
+    fn get_type(&self) -> String;
+    fn get_properties(&self) -> Self::PropType;
+}
+
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all(deserialize = "snake_case"))]
 pub struct FileProperties {
