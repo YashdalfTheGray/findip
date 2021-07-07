@@ -1,11 +1,24 @@
 use serde::Deserialize;
 use std::{collections::HashMap, path::Path};
 
-pub trait Notifier {
-    type PropType;
-
-    fn get_type(&self) -> String;
-    fn get_properties(&self) -> Self::PropType;
+#[derive(Debug, Clone)]
+pub enum Notifier {
+    File {
+        overwrite: bool,
+        file_path: Box<Path>,
+    },
+    S3 {
+        assume_role_arn: String,
+        region: String,
+        bucket_name: String,
+    },
+    RestApi {
+        url: String,
+        method: String,
+        body: HashMap<String, String>,
+        headers: HashMap<String, String>,
+    },
+    Stdout,
 }
 
 #[derive(Debug, Clone, Deserialize)]
