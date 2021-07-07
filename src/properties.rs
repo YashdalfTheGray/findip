@@ -1,7 +1,8 @@
 use serde::Deserialize;
 use std::{collections::HashMap, path::Path};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all(deserialize = "snake_case"))]
 pub enum Notifier {
     File {
         overwrite: bool,
@@ -44,7 +45,8 @@ pub struct RestProperties {
     headers: HashMap<String, String>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all(deserialize = "snake_case"))]
 pub struct ConfigFile {
     cron: String,
     notify_on_change_only: bool,
