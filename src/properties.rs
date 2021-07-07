@@ -44,10 +44,9 @@ pub struct RestProperties {
     headers: HashMap<String, String>,
 }
 
-#[derive(Debug, Clone, Deserialize)]
-#[serde(rename_all(deserialize = "snake_case"))]
-pub struct ConfigFile<T> {
+#[derive(Debug, Clone)]
+pub struct ConfigFile {
     cron: String,
     notify_on_change_only: bool,
-    notifiers: Vec<T>,
+    notifiers: Vec<Notifier>,
 }
