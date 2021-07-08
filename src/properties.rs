@@ -37,3 +37,18 @@ pub struct ConfigFile {
     notify_on_change_only: bool,
     notifiers: Vec<Notifier>,
 }
+
+#[cfg(test)]
+mod tests {
+    use std::fs::read_to_string;
+
+    use super::*;
+
+    fn get_yaml_from_file(
+        file_path: String,
+    ) -> Result<ConfigFile, Box<dyn std::error::Error + 'static>> {
+        let contents = read_to_string(file_path)?;
+        let config_file: ConfigFile = serde_yaml::from_str(&contents)?;
+        Ok(config_file)
+    }
+}
