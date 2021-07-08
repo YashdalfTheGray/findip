@@ -40,13 +40,12 @@ pub struct ConfigFile {
 
 #[cfg(test)]
 mod tests {
+    use std::error::Error;
     use std::fs::read_to_string;
 
     use super::*;
 
-    fn get_yaml_from_file(
-        file_path: String,
-    ) -> Result<ConfigFile, Box<dyn std::error::Error + 'static>> {
+    fn get_yaml_from_file(file_path: String) -> Result<ConfigFile, Box<dyn Error + 'static>> {
         let contents = read_to_string(file_path)?;
         let config_file: ConfigFile = serde_yaml::from_str(&contents)?;
         Ok(config_file)
