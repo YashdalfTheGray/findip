@@ -3,7 +3,7 @@ use std::{collections::HashMap, path::Path};
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all(deserialize = "snake_case"))]
-pub enum Notifier {
+pub enum NotifierProps {
     File {
         overwrite: bool,
         file_path: Box<Path>,
@@ -20,6 +20,14 @@ pub enum Notifier {
         headers: HashMap<String, String>,
     },
     Stdout,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all(deserialize = "snake_case"))]
+pub struct Notifier {
+    #[serde(rename(deserialize = "type"))]
+    notifier_type: String,
+    properties: NotifierProps,
 }
 
 #[derive(Debug, Clone, Deserialize)]
