@@ -1,7 +1,7 @@
 cron: "0 0 */12 ? * *"
 notifyOnChangeOnly: false
 notifiers:
-  - type: rest
+  - notifierType: rest
     properties:
       endpoint: https://something.com/some/api
       headers:
@@ -9,4 +9,3 @@ notifiers:
         Authorization: "Bearer mysecrettoken"
       body:
         ip: "{{TOKEN_IP_ADDRESS}}"
-  - type: stdout

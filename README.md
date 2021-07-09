@@ -60,16 +60,16 @@ As stated above, at least for now, this config file is not valid because it uses
 cron: "0 0 */12 ? * *"
 notifyOnChangeOnly: false
 notifiers:
-  - type: s3
+  - notifierType: s3
     properties:
       assumeRoleArn: roleArn
       region: us-west-2
       bucketName: bucketName
-  - type: text-file
+  - notifierType: text-file
     properties:
       filePath: testfile.log
       overwrite: false
-  - type: rest
+  - notifierType: rest
     properties:
       endpoint: https://something.com/some/api
       headers:
@@ -77,7 +77,7 @@ notifiers:
         Authorization: "Bearer mysecrettoken"
       body:
         ip: "{{TOKEN_IP_ADDRESS}}"
-  - type: stdout
+  - notifierType: stdout
 ```
 
 You can also use the string `{{TOKEN_IP_ADDRESS}}` as a placeholder for the external IP address as part of the configuration. `findip` will replace this with the actual IP address when it is run.
@@ -91,7 +91,7 @@ This example outputs the IP address to stdout and only prints out the IP address
 cron: "0 0 6 * * ?"
 notifyOnChangeOnly: true
 notifiers:
-  - type: stdout
+  - notifierType: stdout
 ```
 
 ## References

@@ -1,0 +1,8 @@
+---
+cron: "0 0 */12 ? * *"
+notifyOnChangeOnly: false
+notifiers:
+  - notifierType: text-file
+    properties:
+      filePath: testfile.log
+      overwrite: false
