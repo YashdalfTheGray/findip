@@ -75,8 +75,12 @@ notifiers:
       headers:
         Content-Type: application/json
         Authorization: "Bearer mysecrettoken"
+      body:
+        ip: "{{TOKEN_IP_ADDRESS}}"
   - type: stdout
 ```
+
+You can also use the string `{{TOKEN_IP_ADDRESS}}` as a placeholder for the external IP address as part of the configuration. `findip` will replace this with the actual IP address when it is run.
 
 ### Simplest valid example
 
