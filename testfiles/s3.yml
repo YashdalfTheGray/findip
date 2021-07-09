@@ -1,0 +1,8 @@
+cron: "0 0 */12 ? * *"
+notifyOnChangeOnly: false
+notifiers:
+  - type: s3
+    properties:
+      assumeRoleArn: roleArn
+      region: us-west-2
+      bucketName: bucketName
