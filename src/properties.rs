@@ -43,9 +43,27 @@ pub struct ConfigFile {
 #[cfg(test)]
 mod tests {
     use std::error::Error;
+    use std::fmt;
     use std::fs::read_to_string;
 
     use super::*;
+
+    #[derive(Debug, Clone)]
+    struct UnexpectedNotifierError {
+        expected: Notifier,
+    }
+
+    impl fmt::Display for UnexpectedNotifierError {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            write!(
+                f,
+                "Notifier did not match what was expected, expected was {}",
+                self.expected
+            )
+        }
+    }
+
+    impl Error for UnexpectedNotifierError {}
 
     fn get_yaml_from_file(file_path: String) -> Result<ConfigFile, Box<dyn Error + 'static>> {
         let contents = read_to_string(file_path)?;
