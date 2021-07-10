@@ -1,7 +1,7 @@
 cron: "0 0 */12 ? * *"
 notifyOnChangeOnly: false
 notifiers:
-  - notifierType: rest
+  - notifierType: restApi
     properties:
       endpoint: https://something.com/some/api
       headers:

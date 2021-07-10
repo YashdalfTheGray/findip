@@ -69,7 +69,7 @@ notifiers:
     properties:
       filePath: testfile.log
       overwrite: false
-  - notifierType: rest
+  - notifierType: restApi
     properties:
       endpoint: https://something.com/some/api
       headers:
