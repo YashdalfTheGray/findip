@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use std::{collections::HashMap, path::Path};
+use std::{collections::HashMap, fmt, path::Path};
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(rename_all(deserialize = "camelCase"))]
@@ -24,6 +24,12 @@ pub enum Notifier {
         headers: HashMap<String, String>,
     },
     Stdout,
+}
+
+impl fmt::Display for Notifier {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
 }
 
 #[derive(Debug, Clone, Deserialize)]
