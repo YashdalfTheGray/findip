@@ -2,18 +2,21 @@ use serde::Deserialize;
 use std::{collections::HashMap, path::Path};
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
-#[serde(rename_all(deserialize = "snake_case"))]
+#[serde(rename_all(deserialize = "camelCase"))]
 #[serde(tag = "notifierType", content = "properties")]
 pub enum Notifier {
+    #[serde(rename_all(deserialize = "camelCase"))]
     File {
         overwrite: bool,
         file_path: Box<Path>,
     },
+    #[serde(rename_all(deserialize = "camelCase"))]
     S3 {
         assume_role_arn: String,
         region: String,
         bucket_name: String,
     },
+    #[serde(rename_all(deserialize = "camelCase"))]
     RestApi {
         url: String,
         method: String,
@@ -24,10 +27,9 @@ pub enum Notifier {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[serde(rename_all(deserialize = "snake_case"))]
+#[serde(rename_all(deserialize = "camelCase"))]
 pub struct ConfigFile {
     cron: String,
-    #[serde(rename(deserialize = "notifyOnChangeOnly"))]
     notify_on_change_only: bool,
     notifiers: Vec<Notifier>,
 }
