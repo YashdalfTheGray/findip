@@ -77,4 +77,28 @@ mod tests {
         assert_eq!(config_file.notifiers[0], Notifier::Stdout);
         Ok(())
     }
+
+    #[test]
+    fn test_s3_notifier_deserialization() -> Result<(), Box<dyn Error + 'static>> {
+        let config_file = get_yaml_from_file("testfiles/s3.yml".to_string())?;
+        match &config_file.notifiers[0] {
+            Notifier::S3 {
+                assume_role_arn,
+                region,
+                bucket_name,
+            } => {
+                assert_eq!(assume_role_arn, "roleArn");
+                assert_eq!(region, "us-west-2");
+                assert_eq!(bucket_name, "bucketName");
+                Ok(())
+            }
+            _ => Err(Box::new(UnexpectedNotifierError {
+                expected: Notifier::S3 {
+                    assume_role_arn: "".to_owned(),
+                    region: "".to_owned(),
+                    bucket_name: "".to_owned(),
+                },
+            })),
+        }
+    }
 }
