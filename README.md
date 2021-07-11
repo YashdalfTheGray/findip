@@ -71,7 +71,8 @@ notifiers:
       overwrite: false
   - notifierType: restApi
     properties:
-      endpoint: https://something.com/some/api
+      url: https://something.com/some/api
+      method: POST
       headers:
         Content-Type: application/json
         Authorization: "Bearer mysecrettoken"
