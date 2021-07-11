@@ -65,7 +65,7 @@ notifiers:
       assumeRoleArn: roleArn
       region: us-west-2
       bucketName: bucketName
-  - notifierType: text-file
+  - notifierType: file
     properties:
       filePath: testfile.log
       overwrite: false
