@@ -100,4 +100,38 @@ mod tests {
             })),
         }
     }
+
+    #[test]
+    fn test_rest_notifier_deserialization() -> Result<(), Box<dyn Error + 'static>> {
+        let config_file = load_config_from_file("testfiles/rest.yml".to_string())?;
+        match &config_file.notifiers[0] {
+            Notifier::RestApi {
+                url,
+                method,
+                body,
+                headers,
+            } => {
+                assert_eq!(url, "https://something.com/some/api");
+                assert_eq!(method, "POST");
+                assert_eq!(*body.get("ip").unwrap(), "{{TOKEN_IP_ADDRESS}}".to_owned());
+                assert_eq!(
+                    *headers.get("Authorization").unwrap(),
+                    "Bearer mysecrettoken".to_owned()
+                );
+                assert_eq!(
+                    *headers.get("Content-Type").unwrap(),
+                    "application/json".to_owned()
+                );
+                Ok(())
+            }
+            _ => Err(Box::new(UnexpectedNotifierError {
+                expected: Notifier::RestApi {
+                    url: "".to_owned(),
+                    method: "".to_owned(),
+                    body: HashMap::new(),
+                    headers: HashMap::new(),
+                },
+            })),
+        }
+    }
 }
