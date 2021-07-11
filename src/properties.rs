@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use std::{collections::HashMap, fmt, path::Path};
+use std::{collections::HashMap, error::Error, fmt, fs::read_to_string, path::Path};
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(rename_all(deserialize = "camelCase"))]
@@ -40,11 +40,16 @@ pub struct ConfigFile {
     notifiers: Vec<Notifier>,
 }
 
+pub fn load_config_from_file(file_path: String) -> Result<ConfigFile, Box<dyn Error + 'static>> {
+    let contents = read_to_string(file_path)?;
+    let config_file: ConfigFile = serde_yaml::from_str(&contents)?;
+    Ok(config_file)
+}
+
 #[cfg(test)]
 mod tests {
     use std::error::Error;
     use std::fmt;
-    use std::fs::read_to_string;
 
     use super::*;
 
@@ -65,22 +70,16 @@ mod tests {
 
     impl Error for UnexpectedNotifierError {}
 
-    fn get_yaml_from_file(file_path: String) -> Result<ConfigFile, Box<dyn Error + 'static>> {
-        let contents = read_to_string(file_path)?;
-        let config_file: ConfigFile = serde_yaml::from_str(&contents)?;
-        Ok(config_file)
-    }
-
     #[test]
     fn test_stdout_notifier_deserialization() -> Result<(), Box<dyn Error + 'static>> {
-        let config_file = get_yaml_from_file("testfiles/stdout.yml".to_string())?;
+        let config_file = load_config_from_file("testfiles/stdout.yml".to_string())?;
         assert_eq!(config_file.notifiers[0], Notifier::Stdout);
         Ok(())
     }
 
     #[test]
     fn test_s3_notifier_deserialization() -> Result<(), Box<dyn Error + 'static>> {
-        let config_file = get_yaml_from_file("testfiles/s3.yml".to_string())?;
+        let config_file = load_config_from_file("testfiles/s3.yml".to_string())?;
         match &config_file.notifiers[0] {
             Notifier::S3 {
                 assume_role_arn,
