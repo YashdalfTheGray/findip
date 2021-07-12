@@ -134,4 +134,26 @@ mod tests {
             })),
         }
     }
+
+    #[test]
+    fn test_file_notifier_deserialization() -> Result<(), Box<dyn Error + 'static>> {
+        let config_file = load_config_from_file("testfiles/textfile.yml".to_string())?;
+
+        if let Notifier::File {
+            overwrite,
+            file_path,
+        } = &config_file.notifiers[0]
+        {
+            assert_eq!(*overwrite, false);
+            assert_eq!(*file_path, "testfile.log".to_owned());
+            Ok(())
+        } else {
+            Err(Box::new(UnexpectedNotifierError {
+                expected: Notifier::File {
+                    overwrite: false,
+                    file_path: "".to_owned(),
+                },
+            }))
+        }
+    }
 }
