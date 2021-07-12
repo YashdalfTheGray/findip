@@ -80,58 +80,60 @@ mod tests {
     #[test]
     fn test_s3_notifier_deserialization() -> Result<(), Box<dyn Error + 'static>> {
         let config_file = load_config_from_file("testfiles/s3.yml".to_string())?;
-        match &config_file.notifiers[0] {
-            Notifier::S3 {
-                assume_role_arn,
-                region,
-                bucket_name,
-            } => {
-                assert_eq!(assume_role_arn, "roleArn");
-                assert_eq!(region, "us-west-2");
-                assert_eq!(bucket_name, "bucketName");
-                Ok(())
-            }
-            _ => Err(Box::new(UnexpectedNotifierError {
+
+        if let Notifier::S3 {
+            assume_role_arn,
+            region,
+            bucket_name,
+        } = &config_file.notifiers[0]
+        {
+            assert_eq!(assume_role_arn, "roleArn");
+            assert_eq!(region, "us-west-2");
+            assert_eq!(bucket_name, "bucketName");
+            Ok(())
+        } else {
+            Err(Box::new(UnexpectedNotifierError {
                 expected: Notifier::S3 {
                     assume_role_arn: "".to_owned(),
                     region: "".to_owned(),
                     bucket_name: "".to_owned(),
                 },
-            })),
+            }))
         }
     }
 
     #[test]
     fn test_rest_notifier_deserialization() -> Result<(), Box<dyn Error + 'static>> {
         let config_file = load_config_from_file("testfiles/rest.yml".to_string())?;
-        match &config_file.notifiers[0] {
-            Notifier::RestApi {
-                url,
-                method,
-                body,
-                headers,
-            } => {
-                assert_eq!(url, "https://something.com/some/api");
-                assert_eq!(method, "POST");
-                assert_eq!(*body.get("ip").unwrap(), "{{TOKEN_IP_ADDRESS}}".to_owned());
-                assert_eq!(
-                    *headers.get("Authorization").unwrap(),
-                    "Bearer mysecrettoken".to_owned()
-                );
-                assert_eq!(
-                    *headers.get("Content-Type").unwrap(),
-                    "application/json".to_owned()
-                );
-                Ok(())
-            }
-            _ => Err(Box::new(UnexpectedNotifierError {
+
+        if let Notifier::RestApi {
+            url,
+            method,
+            body,
+            headers,
+        } = &config_file.notifiers[0]
+        {
+            assert_eq!(url, "https://something.com/some/api");
+            assert_eq!(method, "POST");
+            assert_eq!(*body.get("ip").unwrap(), "{{TOKEN_IP_ADDRESS}}".to_owned());
+            assert_eq!(
+                *headers.get("Authorization").unwrap(),
+                "Bearer mysecrettoken".to_owned()
+            );
+            assert_eq!(
+                *headers.get("Content-Type").unwrap(),
+                "application/json".to_owned()
+            );
+            Ok(())
+        } else {
+            Err(Box::new(UnexpectedNotifierError {
                 expected: Notifier::RestApi {
                     url: "".to_owned(),
                     method: "".to_owned(),
                     body: HashMap::new(),
                     headers: HashMap::new(),
                 },
-            })),
+            }))
         }
     }
 
