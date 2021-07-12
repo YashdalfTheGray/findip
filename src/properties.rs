@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use std::{collections::HashMap, error::Error, fmt, fs::read_to_string, path::Path};
+use std::{collections::HashMap, error::Error, fmt, fs::read_to_string};
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(rename_all(deserialize = "camelCase"))]
@@ -8,7 +8,7 @@ pub enum Notifier {
     #[serde(rename_all(deserialize = "camelCase"))]
     File {
         overwrite: bool,
-        file_path: Box<Path>,
+        file_path: String,
     },
     #[serde(rename_all(deserialize = "camelCase"))]
     S3 {
