@@ -2,6 +2,7 @@ use clap::{clap_app, crate_authors};
 use dotenv::dotenv;
 
 use findip_lib::hello_world;
+use findip_lib::properties::load_config_from_file;
 
 pub fn main() {
     dotenv().ok();
@@ -16,6 +17,9 @@ pub fn main() {
     .get_matches();
 
     println!("{:#?}", matches.args);
+    let config =
+        load_config_from_file(matches.value_of("config_file_name").unwrap().to_string()).unwrap();
+    println!("{:#?}", config);
 
     hello_world(Option::None);
 }
