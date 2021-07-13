@@ -1,6 +1,6 @@
 use std::net::{IpAddr, Ipv4Addr};
 
-mod properties;
+pub mod properties;
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum NotifierStrategy {
