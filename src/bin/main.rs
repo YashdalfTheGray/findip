@@ -10,7 +10,7 @@ pub fn main() {
         (version: "1.0.0")
         (author: crate_authors!(", "))
         (about: "A lightweight utility that finds out and reports public IP addresses")
-        (@arg config_file_name: -c --config-file-name <FILE_NAME> "A configuration file that provides information on how to notify.")
+        (@arg config_file_name: -c --("config-file-name") <FILE_NAME> "A configuration file that provides information on how to notify.")
         (@arg verbose: -v --verbose +multiple "Enable verbose mode, prints debug information.")
     )
     .get_matches();
