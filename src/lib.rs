@@ -2,14 +2,6 @@ use std::net::{IpAddr, Ipv4Addr};
 
 pub mod properties;
 
-#[derive(PartialEq, Debug, Clone)]
-pub enum NotifierStrategy {
-    File,
-    Stdout,
-    Endpoint,
-    S3,
-}
-
 pub fn hello_world(maybe_name: Option<String>) {
     match maybe_name {
         Some(name) => println!("Hello, {}!", name),
