@@ -2,13 +2,6 @@ use std::net::{IpAddr, Ipv4Addr};
 
 pub mod properties;
 
-pub fn hello_world(maybe_name: Option<String>) {
-    match maybe_name {
-        Some(name) => println!("Hello, {}!", name),
-        None => println!("Hello, World!"),
-    }
-}
-
 pub trait IPNotifier {
     fn notify();
     fn notify_on_change();
