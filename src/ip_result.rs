@@ -42,4 +42,14 @@ impl IPResults {
         }
         (*locked_results).push(IPResult { ip, checked_at })
     }
+
+    pub fn get_latest_ip(self) -> Result<IpAddr, IPError> {
+        let locked_results = self.results.lock().unwrap();
+
+        if (*locked_results).len() == 0 {
+            Err(IPError::new())
+        } else {
+            Ok((*locked_results)[0].ip)
+        }
+    }
 }
