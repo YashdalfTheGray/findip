@@ -52,4 +52,16 @@ impl IPResults {
             Ok((*locked_results)[0].ip)
         }
     }
+
+    pub fn has_changed(self) -> bool {
+        let locked_results = self.results.lock().unwrap();
+        if (*locked_results).len() < 2 {
+            false
+        } else {
+            let old_ip = (*locked_results)[1].ip;
+            let new_ip = (*locked_results)[0].ip;
+
+            old_ip != new_ip
+        }
+    }
 }
