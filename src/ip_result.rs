@@ -5,12 +5,12 @@ use chrono::{DateTime, Utc};
 pub trait IpResultStorage {
     type ErrorType;
 
-    fn add_result(self, ip: IpAddr, checked_at: DateTime<Utc>);
-    fn get_latest_ip(self) -> Result<IpAddr, Self::ErrorType>;
-    fn has_changed(self) -> bool;
+    fn add_result(&self, ip: IpAddr, checked_at: DateTime<Utc>);
+    fn get_latest_ip(&self) -> Result<IpAddr, Self::ErrorType>;
+    fn has_changed(&self) -> bool;
 }
 
-struct IPResult {
+struct IpResult {
     pub ip: IpAddr,
     pub checked_at: DateTime<Utc>,
 }
@@ -32,30 +32,30 @@ impl IpError {
     }
 }
 
-pub struct IPResults {
-    results: Mutex<Vec<IPResult>>,
+pub struct IpResults {
+    results: Mutex<Vec<IpResult>>,
 }
 
-impl IPResults {
-    pub fn new() -> IPResults {
-        IPResults {
+impl IpResults {
+    pub fn new() -> IpResults {
+        IpResults {
             results: Mutex::new(Vec::new()),
         }
     }
 }
 
-impl IpResultStorage for IPResults {
+impl IpResultStorage for IpResults {
     type ErrorType = IpError;
 
-    fn add_result(self, ip: IpAddr, checked_at: DateTime<Utc>) {
+    fn add_result(&self, ip: IpAddr, checked_at: DateTime<Utc>) {
         let mut locked_results = self.results.lock().unwrap();
         if (*locked_results).len() >= 2 {
             (*locked_results).truncate(1);
         }
-        (*locked_results).push(IPResult { ip, checked_at })
+        (*locked_results).push(IpResult { ip, checked_at })
     }
 
-    fn get_latest_ip(self) -> Result<IpAddr, IpError> {
+    fn get_latest_ip(&self) -> Result<IpAddr, IpError> {
         let locked_results = self.results.lock().unwrap();
 
         if (*locked_results).len() == 0 {
@@ -65,7 +65,7 @@ impl IpResultStorage for IPResults {
         }
     }
 
-    fn has_changed(self) -> bool {
+    fn has_changed(&self) -> bool {
         let locked_results = self.results.lock().unwrap();
         if (*locked_results).len() == 0 {
             false
