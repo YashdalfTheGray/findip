@@ -42,8 +42,12 @@ impl IPResults {
             results: Mutex::new(Vec::new()),
         }
     }
+}
 
-    pub fn add_result(self, ip: IpAddr, checked_at: DateTime<Utc>) {
+impl IpResultStorage for IPResults {
+    type ErrorType = IpError;
+
+    fn add_result(self, ip: IpAddr, checked_at: DateTime<Utc>) {
         let mut locked_results = self.results.lock().unwrap();
         if (*locked_results).len() >= 2 {
             (*locked_results).truncate(1);
@@ -51,17 +55,17 @@ impl IPResults {
         (*locked_results).push(IPResult { ip, checked_at })
     }
 
-    pub fn get_latest_ip(self) -> Result<IpAddr, IPError> {
+    fn get_latest_ip(self) -> Result<IpAddr, IpError> {
         let locked_results = self.results.lock().unwrap();
 
         if (*locked_results).len() == 0 {
-            Err(IPError::new())
+            Err(IpError::new())
         } else {
             Ok((*locked_results)[0].ip)
         }
     }
 
-    pub fn has_changed(self) -> bool {
+    fn has_changed(self) -> bool {
         let locked_results = self.results.lock().unwrap();
         if (*locked_results).len() == 0 {
             false
