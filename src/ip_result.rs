@@ -55,8 +55,10 @@ impl IPResults {
 
     pub fn has_changed(self) -> bool {
         let locked_results = self.results.lock().unwrap();
-        if (*locked_results).len() < 2 {
+        if (*locked_results).len() == 0 {
             false
+        } else if (*locked_results).len() < 2 {
+            true
         } else {
             let old_ip = (*locked_results)[1].ip;
             let new_ip = (*locked_results)[0].ip;
