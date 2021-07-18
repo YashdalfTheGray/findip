@@ -2,6 +2,14 @@ use std::{error::Error, fmt, net::IpAddr, sync::Mutex};
 
 use chrono::{DateTime, Utc};
 
+pub trait IpResultStorage {
+    type ErrorType;
+
+    fn add_result(self, ip: IpAddr, checked_at: DateTime<Utc>);
+    fn get_latest_ip(self) -> Result<IpAddr, Self::ErrorType>;
+    fn has_changed(self) -> bool;
+}
+
 struct IPResult {
     pub ip: IpAddr,
     pub checked_at: DateTime<Utc>,
