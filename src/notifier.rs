@@ -1,8 +1,10 @@
-pub trait IPNotifier {
-    type ReturnType;
+use crate::ip_result::IpResultStorage;
 
-    fn notify() -> Self::ReturnType;
-    fn notify_on_change() -> Self::ReturnType {
-        Self::notify()
+pub trait IPNotifier: IpResultStorage {
+    fn notify();
+    fn notify_on_change(&self) {
+        if self.has_changed() {
+            Self::notify()
+        }
     }
 }
