@@ -33,12 +33,14 @@ impl IpError {
 }
 
 pub struct IpResults {
+    only_notify_on_change: bool,
     results: Mutex<Vec<IpResult>>,
 }
 
 impl IpResults {
-    pub fn new() -> IpResults {
+    pub fn new(only_notify_on_change: Option<bool>) -> IpResults {
         IpResults {
+            only_notify_on_change: only_notify_on_change.unwrap_or(false),
             results: Mutex::new(Vec::new()),
         }
     }
