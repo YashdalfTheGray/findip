@@ -1,35 +1,24 @@
-use std::{error::Error, fmt, net::IpAddr, sync::Mutex};
+use std::{net::IpAddr, sync::Mutex};
 
 use chrono::{DateTime, Utc};
+
+use crate::{
+    ip_error::IpError,
+    ip_query::{run_ip_query, IpQueryParams},
+    notifier::IpNotifier,
+};
 
 pub trait IpResultStorage {
     type ErrorType;
 
     fn add_result(&self, ip: IpAddr, checked_at: DateTime<Utc>);
     fn get_latest_ip(&self) -> Result<IpAddr, Self::ErrorType>;
-    fn has_changed(&self) -> bool;
+    fn ip_has_changed(&self) -> bool;
 }
 
 struct IpResult {
     pub ip: IpAddr,
     pub checked_at: DateTime<Utc>,
-}
-
-#[derive(Debug, Clone)]
-pub struct IpError {}
-
-impl fmt::Display for IpError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "IP Address not found.",)
-    }
-}
-
-impl Error for IpError {}
-
-impl IpError {
-    pub fn new() -> Self {
-        IpError {}
-    }
 }
 
 pub struct IpResults {
@@ -43,6 +32,31 @@ impl IpResults {
             only_notify_on_change: only_notify_on_change.unwrap_or(false),
             results: Mutex::new(Vec::new()),
         }
+    }
+
+    pub fn query_ip<N>(&self, notifier: N)
+    where
+        N: IpNotifier,
+    {
+        let params = IpQueryParams {
+            services: vec!["test".to_string()],
+        };
+
+        match run_ip_query(params) {
+            Ok(ip) => {
+                self.add_result(ip, Utc::now());
+                if self.only_notify_on_change {
+                    if self.ip_has_changed() {
+                        notifier.notify_success(ip);
+                    }
+                } else {
+                    notifier.notify_success(ip);
+                }
+            }
+            Err(e) => {
+                notifier.notify_error(e);
+            }
+        };
     }
 }
 
@@ -67,7 +81,7 @@ impl IpResultStorage for IpResults {
         }
     }
 
-    fn has_changed(&self) -> bool {
+    fn ip_has_changed(&self) -> bool {
         let locked_results = self.results.lock().unwrap();
         if (*locked_results).len() == 0 {
             false
