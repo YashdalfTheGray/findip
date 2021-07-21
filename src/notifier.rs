@@ -1,5 +1,5 @@
 use std::net::IpAddr;
 
-pub trait IPNotifier {
+pub trait IpNotifier {
     fn notify(ip: IpAddr);
 }
