@@ -124,4 +124,14 @@ mod tests {
             IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1))
         );
     }
+
+    #[test]
+    fn test_get_latest_ip_when_no_ips() -> Result<(), UnexpectedOutputError> {
+        let results = IpResults::new(Some(false));
+
+        match results.get_latest_ip() {
+            Ok(_) => Err(UnexpectedOutputError {}),
+            Err(_) => Ok(()),
+        }
+    }
 }
