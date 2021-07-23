@@ -95,3 +95,22 @@ impl IpResultStorage for IpResults {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+
+    use std::net::Ipv4Addr;
+
+    use super::*;
+
+    #[test]
+    fn test_add_result() {
+        let results = IpResults::new(Some(false));
+
+        results.add_result(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), Utc::now());
+        assert_eq!(
+            results.get_latest_ip().unwrap(),
+            IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1))
+        );
+    }
+}
