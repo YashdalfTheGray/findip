@@ -99,9 +99,20 @@ impl IpResultStorage for IpResults {
 #[cfg(test)]
 mod tests {
 
-    use std::net::Ipv4Addr;
+    use std::{error::Error, fmt, net::Ipv4Addr};
 
     use super::*;
+
+    #[derive(Debug, Clone)]
+    struct UnexpectedOutputError {}
+
+    impl fmt::Display for UnexpectedOutputError {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            write!(f, "The output of the test was unexpected.",)
+        }
+    }
+
+    impl Error for UnexpectedOutputError {}
 
     #[test]
     fn test_add_result() {
