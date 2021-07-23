@@ -134,4 +134,18 @@ mod tests {
             Err(_) => Ok(()),
         }
     }
+
+    #[test]
+    fn test_get_latest_ip_when_only_one_ip() -> Result<(), UnexpectedOutputError> {
+        let results = IpResults::new(Some(false));
+
+        results.add_result(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), Utc::now());
+        match results.get_latest_ip() {
+            Ok(ip) => {
+                assert_eq!(ip, IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)));
+                Ok(())
+            }
+            Err(_) => Err(UnexpectedOutputError {}),
+        }
+    }
 }
