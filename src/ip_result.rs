@@ -148,4 +148,18 @@ mod tests {
             Err(_) => Err(UnexpectedOutputError {}),
         }
     }
+
+    #[test]
+    fn test_ip_has_changed_without_ips() {
+        let results = IpResults::new(Some(false));
+        assert!(results.ip_has_changed() == false);
+    }
+
+    #[test]
+    fn test_ip_has_changed_with_one_ip() {
+        let results = IpResults::new(Some(false));
+        results.add_result(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), Utc::now());
+
+        assert!(results.ip_has_changed() == true);
+    }
 }
