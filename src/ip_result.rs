@@ -115,6 +115,18 @@ mod tests {
     impl Error for UnexpectedOutputError {}
 
     #[test]
+    fn test_new_ip_results_with_defaults() {
+        let ip_results = IpResults::new(None);
+        assert!(ip_results.only_notify_on_change == false);
+    }
+
+    #[test]
+    fn test_new_ip_results_with_a_value() {
+        let ip_results = IpResults::new(Some(true));
+        assert!(ip_results.only_notify_on_change == true);
+    }
+
+    #[test]
     fn test_add_result() {
         let results = IpResults::new(Some(false));
 
