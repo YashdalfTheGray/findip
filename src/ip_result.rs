@@ -162,4 +162,22 @@ mod tests {
 
         assert!(results.ip_has_changed() == true);
     }
+
+    #[test]
+    fn test_ip_has_changed_with_two_different_ips() {
+        let results = IpResults::new(Some(false));
+        results.add_result(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), Utc::now());
+        results.add_result(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 2)), Utc::now());
+
+        assert!(results.ip_has_changed() == true);
+    }
+
+    #[test]
+    fn test_ip_has_changed_with_two_of_the_same_ips() {
+        let results = IpResults::new(Some(false));
+        results.add_result(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), Utc::now());
+        results.add_result(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), Utc::now());
+
+        assert!(results.ip_has_changed() == false);
+    }
 }
