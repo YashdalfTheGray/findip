@@ -1,7 +1,7 @@
 use clap::{clap_app, crate_authors};
 use dotenv::dotenv;
 
-use findip_lib::{properties::load_config_from_file, schedule_ip_notification};
+use findip_lib::{config_file::load_config_from_file, schedule_ip_notification};
 
 pub fn main() {
     dotenv().ok();
