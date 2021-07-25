@@ -36,8 +36,17 @@ impl fmt::Display for Notifier {
 #[serde(rename_all(deserialize = "camelCase"))]
 pub struct ConfigFile {
     cron: String,
+    #[serde(default = "get_default_services")]
+    services: Vec<String>,
     notify_on_change_only: bool,
     notifiers: Vec<Notifier>,
+}
+
+pub fn get_default_services() -> Vec<String> {
+    vec![
+        "https://api.ipify.org/".to_string(),
+        "https://diagnostic.opendns.com/myip".to_string(),
+    ]
 }
 
 pub fn load_config_from_file(file_path: String) -> Result<ConfigFile, Box<dyn Error + 'static>> {
