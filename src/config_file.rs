@@ -175,4 +175,15 @@ mod tests {
         assert_eq!(config_file.services, get_default_services());
         Ok(())
     }
+
+    #[test]
+    fn test_included_services_deserialization() -> Result<(), Box<dyn Error + 'static>> {
+        let config_file = load_config_from_file("testfiles/custom_services.yml".to_string())?;
+
+        assert_eq!(
+            config_file.services,
+            vec!["https://ipinfo.io/ip".to_string()]
+        );
+        Ok(())
+    }
 }
