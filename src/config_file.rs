@@ -167,4 +167,12 @@ mod tests {
             }))
         }
     }
+
+    #[test]
+    fn test_missing_services_deserialization() -> Result<(), Box<dyn Error + 'static>> {
+        let config_file = load_config_from_file("testfiles/textfile.yml".to_string())?;
+
+        assert_eq!(config_file.services, get_default_services());
+        Ok(())
+    }
 }
