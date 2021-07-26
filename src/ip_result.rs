@@ -36,6 +36,18 @@ pub struct IpResults {
     results: Vec<IpResult>,
 }
 
+impl IpResults {
+    pub fn new(only_notify_on_change: Option<bool>) -> IpResults {
+        IpResults {
+            only_notify_on_change: match only_notify_on_change {
+                Some(b) => b,
+                None => false,
+            },
+            results: Vec::new(),
+        }
+    }
+}
+
 impl IpResultStorage for IpResults {
     type ErrorType = IpError;
 
