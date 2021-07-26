@@ -16,11 +16,13 @@ pub trait IpResultStorage {
     fn ip_has_changed(&self) -> bool;
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd)]
 struct IpResult {
     pub ip: IpAddr,
     pub checked_at: DateTime<Utc>,
 }
 
+#[derive(Debug)]
 pub struct IpResults {
     only_notify_on_change: bool,
     results: Mutex<Vec<IpResult>>,
