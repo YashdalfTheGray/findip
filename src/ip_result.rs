@@ -22,15 +22,21 @@ struct IpResult {
     pub checked_at: DateTime<Utc>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd)]
 pub struct IpResults {
+    only_notify_on_change: bool,
+    results: Vec<IpResult>,
+}
+
+#[derive(Debug)]
+pub struct AtomicIpResults {
     only_notify_on_change: bool,
     results: Mutex<Vec<IpResult>>,
 }
 
-impl IpResults {
-    pub fn new(only_notify_on_change: Option<bool>) -> IpResults {
-        IpResults {
+impl AtomicIpResults {
+    pub fn new(only_notify_on_change: Option<bool>) -> AtomicIpResults {
+        AtomicIpResults {
             only_notify_on_change: only_notify_on_change.unwrap_or(false),
             results: Mutex::new(Vec::new()),
         }
@@ -62,7 +68,7 @@ impl IpResults {
     }
 }
 
-impl IpResultStorage for IpResults {
+impl IpResultStorage for AtomicIpResults {
     type ErrorType = IpError;
 
     fn add_result(&self, ip: IpAddr, checked_at: DateTime<Utc>) {
@@ -118,19 +124,19 @@ mod tests {
 
     #[test]
     fn test_new_ip_results_with_defaults() {
-        let ip_results = IpResults::new(None);
+        let ip_results = AtomicIpResults::new(None);
         assert!(ip_results.only_notify_on_change == false);
     }
 
     #[test]
     fn test_new_ip_results_with_a_value() {
-        let ip_results = IpResults::new(Some(true));
+        let ip_results = AtomicIpResults::new(Some(true));
         assert!(ip_results.only_notify_on_change == true);
     }
 
     #[test]
     fn test_add_result() {
-        let results = IpResults::new(Some(false));
+        let results = AtomicIpResults::new(Some(false));
 
         results.add_result(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), Utc::now());
         assert_eq!(
@@ -141,7 +147,7 @@ mod tests {
 
     #[test]
     fn test_get_latest_ip_when_no_ips() -> Result<(), UnexpectedOutputError> {
-        let results = IpResults::new(Some(false));
+        let results = AtomicIpResults::new(Some(false));
 
         match results.get_latest_ip() {
             Ok(_) => Err(UnexpectedOutputError {}),
@@ -151,7 +157,7 @@ mod tests {
 
     #[test]
     fn test_get_latest_ip_when_only_one_ip() -> Result<(), UnexpectedOutputError> {
-        let results = IpResults::new(Some(false));
+        let results = AtomicIpResults::new(Some(false));
 
         results.add_result(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), Utc::now());
         match results.get_latest_ip() {
@@ -165,13 +171,13 @@ mod tests {
 
     #[test]
     fn test_ip_has_changed_without_ips() {
-        let results = IpResults::new(Some(false));
+        let results = AtomicIpResults::new(Some(false));
         assert!(results.ip_has_changed() == false);
     }
 
     #[test]
     fn test_ip_has_changed_with_one_ip() {
-        let results = IpResults::new(Some(false));
+        let results = AtomicIpResults::new(Some(false));
         results.add_result(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), Utc::now());
 
         assert!(results.ip_has_changed() == true);
@@ -179,7 +185,7 @@ mod tests {
 
     #[test]
     fn test_ip_has_changed_with_two_different_ips() {
-        let results = IpResults::new(Some(false));
+        let results = AtomicIpResults::new(Some(false));
         results.add_result(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), Utc::now());
         results.add_result(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 2)), Utc::now());
 
@@ -188,7 +194,7 @@ mod tests {
 
     #[test]
     fn test_ip_has_changed_with_two_of_the_same_ips() {
-        let results = IpResults::new(Some(false));
+        let results = AtomicIpResults::new(Some(false));
         results.add_result(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), Utc::now());
         results.add_result(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), Utc::now());
 
