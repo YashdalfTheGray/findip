@@ -11,9 +11,9 @@ use crate::{
 pub trait IpResultStorage {
     type ErrorType;
 
-    fn add_result(self, ip: IpAddr, checked_at: DateTime<Utc>);
-    fn get_latest_ip(self) -> Result<IpAddr, Self::ErrorType>;
-    fn ip_has_changed(self) -> bool;
+    fn add_result(&mut self, ip: IpAddr, checked_at: DateTime<Utc>);
+    fn get_latest_ip(&self) -> Result<IpAddr, Self::ErrorType>;
+    fn ip_has_changed(&self) -> bool;
 }
 
 pub trait AtomicIpResultStorage {
@@ -51,14 +51,14 @@ impl IpResults {
 impl IpResultStorage for IpResults {
     type ErrorType = IpError;
 
-    fn add_result(mut self, ip: IpAddr, checked_at: DateTime<Utc>) {
+    fn add_result(&mut self, ip: IpAddr, checked_at: DateTime<Utc>) {
         if self.results.len() >= 2 {
             self.results.truncate(1);
         }
         self.results.push(IpResult { ip, checked_at })
     }
 
-    fn get_latest_ip(self) -> Result<IpAddr, Self::ErrorType> {
+    fn get_latest_ip(&self) -> Result<IpAddr, Self::ErrorType> {
         if self.results.len() == 0 {
             Err(IpError::new())
         } else {
@@ -66,7 +66,7 @@ impl IpResultStorage for IpResults {
         }
     }
 
-    fn ip_has_changed(self) -> bool {
+    fn ip_has_changed(&self) -> bool {
         if self.results.len() == 0 {
             false
         } else if self.results.len() < 2 {
