@@ -53,12 +53,14 @@ Eventually, this config file will be able to support multiple notifiers running 
 
 ### Example with all the notifiers
 
-As stated above, at least for now, this config file is not valid because it uses more than one notifier but it is useful as a way to show how the config file is structured and what options are available. This example notifies every 12 hours and even if there isn't a change to the IP address.
+As stated above, at least for now, this config file is not valid because it uses more than one notifier but it is useful as a way to show how the config file is structured and what options are available. This example notifies every 12 hours and even if there isn't a change to the IP address. This configuration also includes an optional key called `services` if you wanted to customize what services to use to check for the host's public IP address.
 
 ```yaml
 ---
 cron: "0 0 */12 ? * *"
 notifyOnChangeOnly: false
+services:
+  - https://api.ipify.org/
 notifiers:
   - notifierType: s3
     properties:
