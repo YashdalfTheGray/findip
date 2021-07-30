@@ -1,4 +1,8 @@
-use std::net::{IpAddr, Ipv4Addr};
+use std::{
+    collections::HashSet,
+    hash::Hash,
+    net::{IpAddr, Ipv4Addr},
+};
 
 use crate::ip_error::IpError;
 
@@ -18,4 +22,10 @@ pub fn run_ip_query(params: IpQueryParams) -> Result<IpAddr, IpError> {
         .collect();
 
     Ok(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)))
+}
+
+fn uniq<T: Eq + Hash>(mut v: Vec<T>) -> Vec<T> {
+    let set: HashSet<T> = v.drain(..).collect();
+    v.extend(set.into_iter());
+    v
 }
