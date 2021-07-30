@@ -1,8 +1,9 @@
 use std::{
-    collections::HashSet,
     hash::Hash,
     net::{IpAddr, Ipv4Addr},
 };
+
+use indexmap::IndexSet;
 
 use crate::ip_error::IpError;
 
@@ -25,9 +26,8 @@ pub fn run_ip_query(params: IpQueryParams) -> Result<IpAddr, IpError> {
 }
 
 fn uniq<T: Eq + Hash>(mut v: Vec<T>) -> Vec<T> {
-    let set: HashSet<T> = v.drain(..).collect();
-    v.extend(set.into_iter());
-    v
+    let set: IndexSet<T> = v.drain(..).collect();
+    set.into_iter().collect()
 }
 
 #[cfg(test)]
