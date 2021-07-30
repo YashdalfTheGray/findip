@@ -29,3 +29,15 @@ fn uniq<T: Eq + Hash>(mut v: Vec<T>) -> Vec<T> {
     v.extend(set.into_iter());
     v
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_uniq_returns_vec_without_duplicates() {
+        let v = vec![1, 1, 2, 3, 4, 5, 5, 6, 6, 6, 6, 6];
+        let result = uniq(v);
+        assert_eq!(result, vec![1, 2, 3, 4, 5, 6]);
+    }
+}
