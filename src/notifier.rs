@@ -1,8 +1,8 @@
 use std::net::IpAddr;
 
-use crate::errors::IpError;
+use crate::errors::IpConflict;
 
 pub trait IpNotifier {
     fn notify_success(&self, ip: IpAddr);
-    fn notify_error(&self, err: IpError);
+    fn notify_error(&self, err: IpConflict);
 }
