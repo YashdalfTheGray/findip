@@ -40,4 +40,25 @@ mod test {
         let result = uniq(v);
         assert_eq!(result, vec![1, 2, 3, 4, 5, 6]);
     }
+
+    #[test]
+    fn test_uniq_returns_vec_as_is_when_no_duplicates() {
+        let v = vec![1, 2, 3, 4, 5, 6];
+        let result = uniq(v);
+        assert_eq!(result, vec![1, 2, 3, 4, 5, 6]);
+    }
+
+    #[test]
+    fn test_uniq_returns_vec_as_is_when_only_one_element() {
+        let v = vec![1];
+        let result = uniq(v);
+        assert_eq!(result, vec![1]);
+    }
+
+    #[test]
+    fn test_uniq_returns_vec_as_is_when_empty() {
+        let v: Vec<i32> = vec![];
+        let result = uniq(v);
+        assert_eq!(result, Vec::<i32>::new());
+    }
 }
