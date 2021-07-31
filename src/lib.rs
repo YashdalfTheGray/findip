@@ -1,7 +1,7 @@
 use std::net::{IpAddr, Ipv4Addr};
 
 pub mod config_file;
-pub mod ip_error;
+pub mod errors;
 pub mod ip_query;
 pub mod ip_result;
 pub mod notifier;

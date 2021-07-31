@@ -1,6 +1,6 @@
 use std::net::IpAddr;
 
-use crate::ip_error::IpError;
+use crate::errors::IpError;
 
 pub trait IpNotifier {
     fn notify_success(&self, ip: IpAddr);

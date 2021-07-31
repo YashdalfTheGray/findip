@@ -3,7 +3,7 @@ use std::net::IpAddr;
 use chrono::{DateTime, Utc};
 
 use crate::{
-    ip_error::IpError,
+    errors::IpError,
     ip_query::{run_ip_query, IpQueryParams},
     notifier::IpNotifier,
 };
