@@ -5,13 +5,13 @@ use std::{
 
 use indexmap::IndexSet;
 
-use crate::errors::IpConflict;
+use crate::errors::IpConflictError;
 
 pub struct IpQueryParams {
     pub services: Vec<String>,
 }
 
-pub fn run_ip_query(params: IpQueryParams) -> Result<IpAddr, IpConflict> {
+pub fn run_ip_query(params: IpQueryParams) -> Result<IpAddr, IpConflictError> {
     let ips: Vec<String> = params
         .services
         .iter()
@@ -25,7 +25,7 @@ pub fn run_ip_query(params: IpQueryParams) -> Result<IpAddr, IpConflict> {
     let uniq_ips: Vec<String> = uniq(ips.clone());
 
     if uniq_ips.len() > 1 {
-        return Err(IpConflict::new(ips.clone()));
+        return Err(IpConflictError::new(ips.clone()));
     }
 
     Ok(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)))

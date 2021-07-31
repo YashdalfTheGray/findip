@@ -18,11 +18,11 @@ impl IpError {
 }
 
 #[derive(Debug, Clone)]
-pub struct IpConflict {
+pub struct IpConflictError {
     ips: Vec<String>,
 }
 
-impl fmt::Display for IpConflict {
+impl fmt::Display for IpConflictError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
@@ -32,11 +32,11 @@ impl fmt::Display for IpConflict {
     }
 }
 
-impl Error for IpConflict {}
+impl Error for IpConflictError {}
 
-impl IpConflict {
+impl IpConflictError {
     pub fn new(ips: Vec<String>) -> Self {
-        IpConflict { ips }
+        IpConflictError { ips }
     }
 
     fn ips_as_string_list(&self) -> String {
