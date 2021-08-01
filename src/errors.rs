@@ -1,7 +1,17 @@
 use std::{error::Error, fmt};
 
 #[derive(Debug, Clone)]
-pub struct IpError {}
+pub enum ErrorReason {
+    IpConflict(Vec<String>),
+    InvalidInput(String),
+    NoIpAddressesFound,
+    Generic(String),
+}
+
+#[derive(Debug, Clone)]
+pub struct IpError {
+    reason: ErrorReason,
+}
 
 impl fmt::Display for IpError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -12,8 +22,8 @@ impl fmt::Display for IpError {
 impl Error for IpError {}
 
 impl IpError {
-    pub fn new() -> Self {
-        IpError {}
+    pub fn new(reason: ErrorReason) -> Self {
+        IpError { reason }
     }
 }
 
