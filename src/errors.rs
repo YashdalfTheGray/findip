@@ -15,7 +15,20 @@ pub struct IpError {
 
 impl fmt::Display for IpError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "IP Address not found.",)
+        match &self.reason {
+            ErrorReason::IpConflict(ips) => {
+                write!(
+                    f,
+                    "Multiple IPs were reported back from the list of services\n{:#?}",
+                    ips.join("\n"),
+                )
+            }
+            ErrorReason::InvalidInput(context) => {
+                write!(f, "An input was unexpected. Context: {}", context)
+            }
+            ErrorReason::NoIpAddressesFound => write!(f, "No IP addresses were found in the result storage. Most likely, a query has not been run."),
+            ErrorReason::Generic(context) => write!(f, "An error was encountered. Context: {}", context),
+        }
     }
 }
 
