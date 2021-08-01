@@ -3,7 +3,7 @@ use std::net::IpAddr;
 use chrono::{DateTime, Utc};
 
 use crate::{
-    errors::IpError,
+    errors::{ErrorReason, IpError},
     ip_query::{run_ip_query, IpQueryParams},
     notifier::IpNotifier,
 };
@@ -75,7 +75,7 @@ impl IpResultStorage for IpResults {
 
     fn get_latest_ip(&self) -> Result<IpAddr, Self::ErrorType> {
         if self.results.len() == 0 {
-            Err(IpError::new())
+            Err(IpError::new(ErrorReason::NoIpAddressesFound))
         } else {
             Ok(self.results[0].ip)
         }
