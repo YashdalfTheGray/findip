@@ -4,6 +4,7 @@ use std::{error::Error, fmt};
 pub enum ErrorReason {
     IpConflict(Vec<String>),
     InvalidInput(String),
+    FileWriteFailed(String),
     NoIpAddressesFound,
     Generic(String),
 }
@@ -27,6 +28,7 @@ impl fmt::Display for IpError {
                 write!(f, "An input was unexpected. Context: {}", context)
             }
             ErrorReason::NoIpAddressesFound => write!(f, "No IP addresses were found in the result storage. Most likely, a query has not been run."),
+            ErrorReason::FileWriteFailed(file) => write!(f, "Failed to write IP address to file at path {}", file),
             ErrorReason::Generic(context) => write!(f, "An error was encountered. Context: {}", context),
         }
     }
