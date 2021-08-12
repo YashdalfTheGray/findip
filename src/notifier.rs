@@ -1,5 +1,7 @@
 use std::{collections::HashMap, fs, io::Write, net::IpAddr};
 
+use log::{debug, error};
+
 use crate::errors::{ErrorReason, IpError};
 
 pub trait IpNotifier {
@@ -25,29 +27,35 @@ impl IpNotifier for FileNotifier {
     fn notify_success(&self, ip: IpAddr) {
         if self.overwrite {
             match fs::write(ip.to_string(), self.file_path.clone()) {
-                Ok(()) => (),
+                Ok(()) => debug!("IP written to file successfully."),
                 Err(_) => IpNotifier::notify_error(
                     self,
                     IpError::new(ErrorReason::FileWriteFailed(self.file_path.clone())),
                 ),
             }
         } else {
-            let mut file = fs::OpenOptions::new()
+            match fs::OpenOptions::new()
                 .write(true)
                 .append(true)
                 .open(self.file_path.clone())
-                .expect("failed to open file");
-
-            match file.write(&ip.to_string().into_bytes()) {
-                Ok(_) => (),
+            {
+                Ok(mut file) => match file.write(&ip.to_string().into_bytes()) {
+                    Ok(_) => debug!("IP written to file successfully."),
+                    Err(_) => IpNotifier::notify_error(
+                        self,
+                        IpError::new(ErrorReason::FileWriteFailed(self.file_path.clone())),
+                    ),
+                },
                 Err(_) => IpNotifier::notify_error(
                     self,
-                    IpError::new(ErrorReason::FileWriteFailed(self.file_path.clone())),
+                    IpError::new(ErrorReason::FileOpenFailed(self.file_path.clone())),
                 ),
             }
         }
     }
-    fn notify_error(&self, err: IpError) {}
+    fn notify_error(&self, err: IpError) {
+        error!("{}", err)
+    }
 }
 
 pub struct S3Notifier {
