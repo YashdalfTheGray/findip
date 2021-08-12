@@ -1,3 +1,4 @@
+use log::LevelFilter;
 use serde::Deserialize;
 use std::{collections::HashMap, error::Error, fmt, fs::read_to_string};
 
@@ -34,12 +35,27 @@ impl fmt::Display for Notifier {
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all(deserialize = "camelCase"))]
+pub struct LoggingConfig {
+    #[serde(default = "get_default_log_path")]
+    log_file: String,
+    #[serde(default = "get_default_log_path")]
+    err_log_file: String,
+    #[serde(default = "get_default_logging_level")]
+    log_level: LevelFilter,
+    #[serde(default = "get_default_log_decoration")]
+    decorate: bool,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all(deserialize = "camelCase"))]
 pub struct ConfigFile {
     cron: String,
     #[serde(default = "get_default_services")]
     services: Vec<String>,
     notify_on_change_only: bool,
     notifiers: Vec<Notifier>,
+    #[serde(default = "get_default_logging_config")]
+    logging_config: LoggingConfig,
 }
 
 pub fn get_default_services() -> Vec<String> {
@@ -47,6 +63,27 @@ pub fn get_default_services() -> Vec<String> {
         "https://api.ipify.org/".to_string(),
         "https://diagnostic.opendns.com/myip".to_string(),
     ]
+}
+
+pub fn get_default_logging_config() -> LoggingConfig {
+    LoggingConfig {
+        log_file: "/tmp/ip_notifier.log".to_string(),
+        err_log_file: "/tmp/ip_notifier.log".to_string(),
+        log_level: LevelFilter::Info,
+        decorate: true,
+    }
+}
+
+pub fn get_default_log_path() -> String {
+    get_default_logging_config().log_file
+}
+
+pub fn get_default_logging_level() -> LevelFilter {
+    get_default_logging_config().log_level
+}
+
+pub fn get_default_log_decoration() -> bool {
+    get_default_logging_config().decorate
 }
 
 pub fn load_config_from_file(file_path: String) -> Result<ConfigFile, Box<dyn Error + 'static>> {
