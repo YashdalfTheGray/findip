@@ -1,0 +1,9 @@
+cron: '0 0 6 * * ?'
+services:
+  - https://ipinfo.io/ip
+notifyOnChangeOnly: true
+notifiers:
+  - notifierType: stdout
+loggingConfig:
+  logFile: './var/log/notifier.log'
+  logLevel: trace

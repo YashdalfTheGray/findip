@@ -38,8 +38,6 @@ impl fmt::Display for Notifier {
 pub struct LoggingConfig {
     #[serde(default = "get_default_log_path")]
     log_file: String,
-    #[serde(default = "get_default_log_path")]
-    err_log_file: String,
     #[serde(default = "get_default_logging_level")]
     log_level: LevelFilter,
     #[serde(default = "get_default_log_decoration")]
@@ -66,9 +64,10 @@ pub fn get_default_services() -> Vec<String> {
 }
 
 pub fn get_default_logging_config() -> LoggingConfig {
+    let log_path = "/tmp/ip_notifier.log";
+
     LoggingConfig {
-        log_file: "/tmp/ip_notifier.log".to_string(),
-        err_log_file: "/tmp/ip_notifier.log".to_string(),
+        log_file: log_path.to_string(),
         log_level: LevelFilter::Info,
         decorate: true,
     }
@@ -221,6 +220,47 @@ mod tests {
             config_file.services,
             vec!["https://ipinfo.io/ip".to_string()]
         );
+        Ok(())
+    }
+
+    #[test]
+    fn test_logging_config_deserialization() -> Result<(), Box<dyn Error + 'static>> {
+        let config_file = load_config_from_file("testfiles/full_logging_config.yml".to_string())?;
+
+        assert_eq!(
+            config_file.logging_config.log_file,
+            "./var/log/notifier.log".to_owned()
+        );
+        assert_eq!(config_file.logging_config.log_level, LevelFilter::Warn);
+        assert_eq!(config_file.logging_config.decorate, false);
+        Ok(())
+    }
+
+    #[test]
+    fn test_logging_config_deserialization_with_defaults() -> Result<(), Box<dyn Error + 'static>> {
+        let config_file = load_config_from_file("testfiles/stdout.yml".to_string())?;
+
+        assert_eq!(
+            config_file.logging_config.log_file,
+            "/tmp/ip_notifier.log".to_owned()
+        );
+        assert_eq!(config_file.logging_config.log_level, LevelFilter::Info);
+        assert_eq!(config_file.logging_config.decorate, true);
+        Ok(())
+    }
+
+    #[test]
+    fn test_logging_config_deserialization_with_partial_defaults(
+    ) -> Result<(), Box<dyn Error + 'static>> {
+        let config_file =
+            load_config_from_file("testfiles/partial_logging_config.yml".to_string())?;
+
+        assert_eq!(
+            config_file.logging_config.log_file,
+            "./var/log/notifier.log".to_owned()
+        );
+        assert_eq!(config_file.logging_config.log_level, LevelFilter::Trace);
+        assert_eq!(config_file.logging_config.decorate, true);
         Ok(())
     }
 }
