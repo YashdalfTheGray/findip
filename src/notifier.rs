@@ -59,9 +59,29 @@ impl IpNotifier for FileNotifier {
 }
 
 pub struct S3Notifier {
+    access_key_id: String,
+    secret_access_key: String,
     assume_role_arn: String,
     region: String,
     bucket_name: String,
+}
+
+impl S3Notifier {
+    pub fn new(
+        access_key_id: String,
+        secret_access_key: String,
+        assume_role_arn: String,
+        region: String,
+        bucket_name: String,
+    ) -> S3Notifier {
+        S3Notifier {
+            access_key_id,
+            secret_access_key,
+            assume_role_arn,
+            region,
+            bucket_name,
+        }
+    }
 }
 
 pub struct RestNotifier {
