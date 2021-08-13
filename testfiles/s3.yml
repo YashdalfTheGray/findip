@@ -1,8 +1,10 @@
-cron: "0 0 */12 ? * *"
+cron: '0 0 */12 ? * *'
 notifyOnChangeOnly: false
 notifiers:
   - notifierType: s3
     properties:
+      accessKeyId: something
+      secretAccessKey: shhh
       assumeRoleArn: roleArn
       region: us-west-2
       bucketName: bucketName

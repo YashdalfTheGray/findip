@@ -13,6 +13,8 @@ pub enum Notifier {
     },
     #[serde(rename_all(deserialize = "camelCase"))]
     S3 {
+        access_key_id: String,
+        secret_access_key: String,
         assume_role_arn: String,
         region: String,
         bucket_name: String,
@@ -127,11 +129,15 @@ mod tests {
         let config_file = load_config_from_file("testfiles/s3.yml".to_string())?;
 
         if let Notifier::S3 {
+            access_key_id,
+            secret_access_key,
             assume_role_arn,
             region,
             bucket_name,
         } = &config_file.notifiers[0]
         {
+            assert_eq!(access_key_id, "something");
+            assert_eq!(secret_access_key, "shhh");
             assert_eq!(assume_role_arn, "roleArn");
             assert_eq!(region, "us-west-2");
             assert_eq!(bucket_name, "bucketName");
@@ -139,6 +145,8 @@ mod tests {
         } else {
             Err(Box::new(UnexpectedNotifierError {
                 expected: Notifier::S3 {
+                    access_key_id: "".to_owned(),
+                    secret_access_key: "".to_owned(),
                     assume_role_arn: "".to_owned(),
                     region: "".to_owned(),
                     bucket_name: "".to_owned(),
