@@ -1,8 +1,12 @@
 use std::{collections::HashMap, fs, io::Write, net::IpAddr};
 
 use log::{debug, error};
+use rusoto_core::Region;
 
-use crate::errors::{ErrorReason, IpError};
+use crate::{
+    errors::{ErrorReason, IpError},
+    sdk::{self, get_s3_client, CustomStsProvider},
+};
 
 pub trait IpNotifier {
     fn notify_success(&self, ip: IpAddr);
@@ -82,6 +86,24 @@ impl S3Notifier {
             bucket_name,
         }
     }
+}
+
+impl IpNotifier for S3Notifier {
+    fn notify_success(&self, ip: IpAddr) {
+        let parsed_region = self.region.parse::<Region>().unwrap_or(Region::UsWest2);
+
+        let credentials_provider = CustomStsProvider::new(
+            self.access_key_id.clone(),
+            self.secret_access_key.clone(),
+            self.assume_role_arn.clone(),
+            None,
+            parsed_region.clone(),
+        );
+
+        let client = get_s3_client(credentials_provider, parsed_region.clone());
+    }
+
+    fn notify_error(&self, err: IpError) {}
 }
 
 pub struct RestNotifier {
