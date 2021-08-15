@@ -57,13 +57,15 @@ As stated above, at least for now, this config file is not valid because it uses
 
 ```yaml
 ---
-cron: "0 0 */12 ? * *"
+cron: '0 0 */12 ? * *'
 notifyOnChangeOnly: false
 services:
   - https://api.ipify.org/
 notifiers:
   - notifierType: s3
     properties:
+      access_key_id: something
+      secret_access_key: something
       assumeRoleArn: roleArn
       region: us-west-2
       bucketName: bucketName
@@ -77,9 +79,9 @@ notifiers:
       method: POST
       headers:
         Content-Type: application/json
-        Authorization: "Bearer mysecrettoken"
+        Authorization: 'Bearer mysecrettoken'
       body:
-        ip: "{{TOKEN_IP_ADDRESS}}"
+        ip: '{{TOKEN_IP_ADDRESS}}'
   - notifierType: stdout
 ```
 
@@ -91,7 +93,7 @@ This example outputs the IP address to stdout and only prints out the IP address
 
 ```yaml
 ---
-cron: "0 0 6 * * ?"
+cron: '0 0 6 * * ?'
 notifyOnChangeOnly: true
 notifiers:
   - notifierType: stdout
