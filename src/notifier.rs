@@ -1,11 +1,13 @@
 use std::{collections::HashMap, fs, io::Write, net::IpAddr};
 
+use chrono::Utc;
 use log::{debug, error};
 use rusoto_core::Region;
+use rusoto_s3::{PutObjectRequest, StreamingBody, S3};
 
 use crate::{
     errors::{ErrorReason, IpError},
-    sdk::{self, get_s3_client, CustomStsProvider},
+    sdk::{get_s3_client, CustomStsProvider},
 };
 
 pub trait IpNotifier {
@@ -91,7 +93,7 @@ impl S3Notifier {
 impl IpNotifier for S3Notifier {
     fn notify_success(&self, ip: IpAddr) {
         let parsed_region = self.region.parse::<Region>().unwrap_or(Region::UsWest2);
-
+        let runtime = tokio::runtime::Runtime::new().unwrap();
         let credentials_provider = CustomStsProvider::new(
             self.access_key_id.clone(),
             self.secret_access_key.clone(),
@@ -99,8 +101,32 @@ impl IpNotifier for S3Notifier {
             None,
             parsed_region.clone(),
         );
-
         let client = get_s3_client(credentials_provider, parsed_region.clone());
+        let key = format!(
+            "{}-ipnotification.txt",
+            Utc::now().format("%Y-%m-%d-%H").to_string()
+        );
+
+        let put_object_request = PutObjectRequest {
+            bucket: self.bucket_name.clone(),
+            body: Some(StreamingBody::from(ip.to_string().as_bytes().to_vec())),
+            key,
+            ..Default::default()
+        };
+
+        let future_response = client.put_object(put_object_request);
+        let response = runtime.block_on(future_response);
+
+        match response {
+            Ok(output) => {
+                debug!("IP written to S3 successfully. Output follows.");
+                debug!("{:#?}", output);
+            }
+            Err(err) => IpNotifier::notify_error(
+                self,
+                IpError::new(ErrorReason::S3WriteFailed(err.to_string())),
+            ),
+        }
     }
 
     fn notify_error(&self, err: IpError) {}
