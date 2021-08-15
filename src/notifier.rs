@@ -12,7 +12,9 @@ use crate::{
 
 pub trait IpNotifier {
     fn notify_success(&self, ip: IpAddr);
-    fn notify_error(&self, err: IpError);
+    fn notify_error(&self, err: IpError) {
+        error!("{}", err);
+    }
 }
 
 pub struct FileNotifier {
@@ -58,9 +60,6 @@ impl IpNotifier for FileNotifier {
                 ),
             }
         }
-    }
-    fn notify_error(&self, err: IpError) {
-        error!("{}", err)
     }
 }
 
@@ -128,8 +127,6 @@ impl IpNotifier for S3Notifier {
             ),
         }
     }
-
-    fn notify_error(&self, err: IpError) {}
 }
 
 pub struct RestNotifier {
