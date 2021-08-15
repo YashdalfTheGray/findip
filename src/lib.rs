@@ -5,6 +5,8 @@ pub mod errors;
 pub mod ip_query;
 pub mod ip_result;
 pub mod notifier;
+pub mod sdk;
+pub mod utils;
 
 pub fn find_external_ip(_config: config_file::ConfigFile) -> std::net::IpAddr {
     IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1))
