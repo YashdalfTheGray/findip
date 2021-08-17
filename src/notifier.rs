@@ -135,3 +135,19 @@ pub struct RestNotifier {
     body: HashMap<String, String>,
     headers: HashMap<String, String>,
 }
+
+impl RestNotifier {
+    pub fn new(
+        url: String,
+        method: String,
+        body: HashMap<String, String>,
+        headers: HashMap<String, String>,
+    ) -> RestNotifier {
+        RestNotifier {
+            url,
+            method,
+            body,
+            headers,
+        }
+    }
+}
