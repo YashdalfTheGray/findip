@@ -23,7 +23,7 @@ It is a utility that finds the external IP address of the node that it is runnin
 
 It, yeah, it probably does. But I wanted to start this project because of a few reasons
 
-- There is this new Rust AWS SDK to experiment with
+- ~~There is this new Rust AWS SDK to experiment with~~ Turns out, it only supports environment variables for auth, nothing else and I wanted a different way of configuring auth. So we're using good ol' rusoto! ❤️
 - I wanted to build something that finds the external IP and figure out how to do it
 - I wanted to ship a library and an executable all in one project, which I haven't done with Rust yet
 
@@ -106,6 +106,7 @@ notifiers:
 - [`clap` docs](https://docs.rs/clap/2.33.3/clap/)
 - [`cron_parser` docs](https://docs.rs/cron-parser/0.7.9/cron_parser/)
 - [`reqwest` docs](https://docs.rs/reqwest/0.11.3/reqwest/index.html)
+- [`rusoto` docs](https://www.rusoto.org/)
 - [`serde` docs](https://serde.rs/)
 - [`serde-yaml` docs](https://docs.rs/serde_yaml/0.8.17/serde_yaml/)
 - IP Address finder "endpoints"
