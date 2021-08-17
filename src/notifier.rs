@@ -2,6 +2,7 @@ use std::{collections::HashMap, fs, io::Write, net::IpAddr};
 
 use chrono::Utc;
 use log::{debug, error};
+use reqwest::Method;
 use rusoto_core::Region;
 use rusoto_s3::{PutObjectRequest, StreamingBody, S3};
 
@@ -131,7 +132,7 @@ impl IpNotifier for S3Notifier {
 
 pub struct RestNotifier {
     url: String,
-    method: String,
+    method: Method,
     body: HashMap<String, String>,
     headers: HashMap<String, String>,
 }
@@ -139,7 +140,7 @@ pub struct RestNotifier {
 impl RestNotifier {
     pub fn new(
         url: String,
-        method: String,
+        method: Method,
         body: HashMap<String, String>,
         headers: HashMap<String, String>,
     ) -> RestNotifier {
