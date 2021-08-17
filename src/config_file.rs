@@ -1,4 +1,5 @@
 use log::LevelFilter;
+use reqwest::Method;
 use serde::Deserialize;
 use std::{collections::HashMap, error::Error, fmt, fs::read_to_string};
 
@@ -22,7 +23,8 @@ pub enum Notifier {
     #[serde(rename_all(deserialize = "camelCase"))]
     RestApi {
         url: String,
-        method: String,
+        #[serde(with = "http_serde::method")]
+        method: Method,
         body: HashMap<String, String>,
         headers: HashMap<String, String>,
     },
@@ -167,7 +169,7 @@ mod tests {
         } = &config_file.notifiers[0]
         {
             assert_eq!(url, "https://something.com/some/api");
-            assert_eq!(method, "POST");
+            assert_eq!(method, Method::POST);
             assert_eq!(*body.get("ip").unwrap(), "{{TOKEN_IP_ADDRESS}}".to_owned());
             assert_eq!(
                 *headers.get("Authorization").unwrap(),
@@ -182,7 +184,7 @@ mod tests {
             Err(Box::new(UnexpectedNotifierError {
                 expected: Notifier::RestApi {
                     url: "".to_owned(),
-                    method: "".to_owned(),
+                    method: Method::GET,
                     body: HashMap::new(),
                     headers: HashMap::new(),
                 },
