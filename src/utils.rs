@@ -1,4 +1,7 @@
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::{
+    collections::HashMap,
+    time::{SystemTime, UNIX_EPOCH},
+};
 
 use chrono::prelude::*;
 
@@ -18,4 +21,12 @@ pub fn parse_into_utc(expiration_str: String) -> DateTime<Utc> {
             .naive_utc(),
         Utc,
     )
+}
+
+pub fn replace_tokens(original: String, token_value_map: HashMap<String, String>) -> String {
+    let result = original.clone();
+
+    token_value_map
+        .iter()
+        .fold(result, |acc, (key, value)| acc.replace(key, value))
 }
