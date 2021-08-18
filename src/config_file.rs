@@ -1,10 +1,10 @@
 use http::HeaderMap;
 use log::LevelFilter;
 use reqwest::Method;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, error::Error, fmt, fs::read_to_string};
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(rename_all(deserialize = "camelCase"))]
 #[serde(tag = "notifierType", content = "properties")]
 pub enum Notifier {
@@ -39,7 +39,7 @@ impl fmt::Display for Notifier {
     }
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all(deserialize = "camelCase"))]
 pub struct LoggingConfig {
     #[serde(default = "get_default_log_path")]
@@ -180,6 +180,34 @@ mod tests {
             assert_eq!(
                 *headers.get("Content-Type").unwrap(),
                 "application/json".to_owned()
+            );
+            Ok(())
+        } else {
+            Err(Box::new(UnexpectedNotifierError {
+                expected: Notifier::RestApi {
+                    url: "".to_owned(),
+                    method: Method::GET,
+                    body: HashMap::new(),
+                    headers: HeaderMap::new(),
+                },
+            }))
+        }
+    }
+
+    #[test]
+    fn test_rest_notifier_body_serialization() -> Result<(), Box<dyn Error + 'static>> {
+        let config_file = load_config_from_file("testfiles/rest.yml".to_string())?;
+
+        if let Notifier::RestApi {
+            url: _,
+            method: _,
+            body,
+            headers: _,
+        } = &config_file.notifiers[0]
+        {
+            assert_eq!(
+                serde_json::to_string(&*body).unwrap(),
+                "{\"ip\":\"{{TOKEN_IP_ADDRESS}}\"}".to_owned()
             );
             Ok(())
         } else {
