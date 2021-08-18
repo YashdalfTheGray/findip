@@ -1,8 +1,10 @@
 use std::{collections::HashMap, fs, io::Write, net::IpAddr};
 
+use async_trait::async_trait;
 use chrono::Utc;
+use http::HeaderMap;
 use log::{debug, error};
-use reqwest::Method;
+use reqwest::{Client, Method};
 use rusoto_core::Region;
 use rusoto_s3::{PutObjectRequest, StreamingBody, S3};
 
@@ -134,7 +136,8 @@ pub struct RestNotifier {
     url: String,
     method: Method,
     body: HashMap<String, String>,
-    headers: HashMap<String, String>,
+    headers: HeaderMap,
+    client: Client,
 }
 
 impl RestNotifier {
@@ -142,13 +145,23 @@ impl RestNotifier {
         url: String,
         method: Method,
         body: HashMap<String, String>,
-        headers: HashMap<String, String>,
+        headers: HeaderMap,
     ) -> RestNotifier {
         RestNotifier {
             url,
             method,
             body,
             headers,
+            client: Client::builder().build().unwrap(),
         }
     }
+
+    fn make_request(&self, ip: IpAddr) {
+        let mut request = self.client.request(self.method.clone(), self.url.clone());
+        request.headers(self.headers.clone());
+    }
+}
+
+impl IpNotifier for RestNotifier {
+    fn notify_success(&self, ip: IpAddr) {}
 }
