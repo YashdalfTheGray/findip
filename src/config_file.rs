@@ -1,3 +1,4 @@
+use http::HeaderMap;
 use log::LevelFilter;
 use reqwest::Method;
 use serde::Deserialize;
@@ -26,7 +27,8 @@ pub enum Notifier {
         #[serde(with = "http_serde::method")]
         method: Method,
         body: HashMap<String, String>,
-        headers: HashMap<String, String>,
+        #[serde(with = "http_serde::header_map")]
+        headers: HeaderMap,
     },
     Stdout,
 }
@@ -186,7 +188,7 @@ mod tests {
                     url: "".to_owned(),
                     method: Method::GET,
                     body: HashMap::new(),
-                    headers: HashMap::new(),
+                    headers: HeaderMap::new(),
                 },
             }))
         }
