@@ -1,16 +1,16 @@
 use std::{collections::HashMap, fs, io::Write, net::IpAddr};
 
-use async_trait::async_trait;
 use chrono::Utc;
 use http::HeaderMap;
 use log::{debug, error};
-use reqwest::{Client, Method};
+use reqwest::{Client, Method, Response};
 use rusoto_core::Region;
 use rusoto_s3::{PutObjectRequest, StreamingBody, S3};
 
 use crate::{
     errors::{ErrorReason, IpError},
     sdk::{get_s3_client, CustomStsProvider},
+    utils,
 };
 
 pub trait IpNotifier {
@@ -138,6 +138,7 @@ pub struct RestNotifier {
     body: HashMap<String, String>,
     headers: HeaderMap,
     client: Client,
+    tokens: Vec<String>,
 }
 
 impl RestNotifier {
@@ -153,15 +154,45 @@ impl RestNotifier {
             body,
             headers,
             client: Client::builder().build().unwrap(),
+            tokens: vec!["{{TOKEN_IP_ADDRESS}}".to_string()],
         }
     }
 
-    fn make_request(&self, ip: IpAddr) {
-        let mut request = self.client.request(self.method.clone(), self.url.clone());
-        request.headers(self.headers.clone());
+    async fn make_request(&self, ip: IpAddr) -> Result<Response, reqwest::Error> {
+        let mut token_value_map = HashMap::new();
+        token_value_map.insert(self.tokens[0].clone(), ip.to_string());
+
+        let request = self.client.request(
+            self.method.clone(),
+            utils::replace_tokens(self.url.clone(), token_value_map.clone()),
+        );
+
+        request
+            .headers(self.headers.clone())
+            .body(utils::replace_tokens(
+                serde_json::to_string(&self.body).unwrap(),
+                token_value_map.clone(),
+            ))
+            .send()
+            .await
     }
 }
 
 impl IpNotifier for RestNotifier {
-    fn notify_success(&self, ip: IpAddr) {}
+    fn notify_success(&self, ip: IpAddr) {
+        let runtime = tokio::runtime::Runtime::new().unwrap();
+        let response_future = self.make_request(ip);
+        let response = runtime.block_on(response_future);
+
+        match response {
+            Ok(output) => {
+                debug!("IP written to REST successfully. Output follows.");
+                debug!("{:#?}", output);
+            }
+            Err(err) => IpNotifier::notify_error(
+                self,
+                IpError::new(ErrorReason::RestRequestFailed(err.to_string())),
+            ),
+        }
+    }
 }
