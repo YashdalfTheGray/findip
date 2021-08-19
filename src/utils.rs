@@ -30,3 +30,29 @@ pub fn replace_tokens(original: String, token_value_map: HashMap<String, String>
         .iter()
         .fold(result, |acc, (key, value)| acc.replace(key, value))
 }
+
+#[cfg(test)]
+mod tests {
+    use std::collections::HashMap;
+
+    use super::*;
+
+    #[test]
+    fn test_replace_tokens_with_no_tokens() {
+        let original = "test string".to_string();
+        let token_value_map = HashMap::<String, String>::new();
+
+        let result = replace_tokens(original, token_value_map);
+        assert_eq!(result, "test string");
+    }
+
+    #[test]
+    fn test_replace_tokens_with_one_token() {
+        let original = "test string with {{TOKEN}}".to_string();
+        let mut token_value_map = HashMap::new();
+        token_value_map.insert("{{TOKEN}}".to_string(), "token value!".to_string());
+
+        let result = replace_tokens(original, token_value_map);
+        assert_eq!(result, "test string with token value!");
+    }
+}
