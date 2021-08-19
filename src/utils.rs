@@ -55,4 +55,25 @@ mod tests {
         let result = replace_tokens(original, token_value_map);
         assert_eq!(result, "test string with token value!");
     }
+
+    #[test]
+    fn test_replace_tokens_with_no_tokens_in_input() {
+        let original = "test string without tokens".to_string();
+        let mut token_value_map = HashMap::new();
+        token_value_map.insert("{{TOKEN}}".to_string(), "token value!".to_string());
+
+        let result = replace_tokens(original, token_value_map);
+        assert_eq!(result, "test string without tokens");
+    }
+
+    #[test]
+    fn test_replace_tokens_with_multiple_tokens() {
+        let original = "test string with {{TOKEN1}} and {{TOKEN2}}".to_string();
+        let mut token_value_map = HashMap::new();
+        token_value_map.insert("{{TOKEN1}}".to_string(), "token value 1".to_string());
+        token_value_map.insert("{{TOKEN2}}".to_string(), "token value 2!".to_string());
+
+        let result = replace_tokens(original, token_value_map);
+        assert_eq!(result, "test string with token value 1 and token value 2!");
+    }
 }
