@@ -109,6 +109,8 @@ notifiers:
 - [`rusoto` docs](https://www.rusoto.org/)
 - [`serde` docs](https://serde.rs/)
 - [`serde-yaml` docs](https://docs.rs/serde_yaml/0.8.17/serde_yaml/)
+- [Rust LLVM based coverage](https://doc.rust-lang.org/nightly/unstable-book/compiler-flags/instrument-coverage.html)
+- [`tarpaulin`](https://github.com/xd009642/tarpaulin)
 - IP Address finder "endpoints"
   - https://api.ipify.org/ (plaintext)
   - https://diagnostic.opendns.com/myip (plaintext)
