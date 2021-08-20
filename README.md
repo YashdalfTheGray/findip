@@ -106,7 +106,15 @@ Okay, so coverage within Rust is a little wild. You have basically 2 options
 - use a package called tarpaulin which is a package that only works on linux
 - use the nightly Rust toolchain and use the LLVM-based native instrumentation by setting it up manually and installing a bunch of things.
 
-We are going to use the second option here, set up the nightly toolchain and install the required things to make the coverage work. The guide is linked in the references section below.
+We are going to use the second option here, set up the nightly toolchain and install the required things to make the coverage work. The guide is linked in the references section below. It is important to note that we're only doing this to get the test coverage but you can also generate runtime coverage. The compiler will inject LLVM counter statements into a binary build as well and output a `.profraw` file.
+
+This process only works (for now) with the Rust nightly toolchain. Accordingly, there is a `rust-toolchain` file with the word `nightly` in it. This tells Cargo to use the nightly toolchain. Then the process is as follows
+
+1. We have to install the `rustfilt` demangler - `cargo install rustfilt`
+1. Then we have to clean the project - `cargo clean`
+1. Then we rebuild with the right flags - `RUSTFLAGS="-Z instrument-coverage" LLVM_PROFILE_FILE="./coverage/findip-%m.profraw" cargo test`
+1. Next, we install the coverage tools - `rustup component add llvm-tools-preview && cargo install cargo-binutils`
+1. Once the tests are run, the instrumented tests output a profile file for each test module. We then have to merge it all together using `cargo profdata -- merge -sparse ./coverage/findip-*.profraw -o ./coverage/findip.profdata`
 
 ## References
 
