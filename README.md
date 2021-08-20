@@ -115,6 +115,30 @@ This process only works (for now) with the Rust nightly toolchain. Accordingly, 
 1. Then we rebuild with the right flags - `RUSTFLAGS="-Z instrument-coverage" LLVM_PROFILE_FILE="./coverage/findip-%m.profraw" cargo test`
 1. Next, we install the coverage tools - `rustup component add llvm-tools-preview && cargo install cargo-binutils`
 1. Once the tests are run, the instrumented tests output a profile file for each test module. We then have to merge it all together using `cargo profdata -- merge -sparse ./coverage/findip-*.profraw -o ./coverage/findip.profdata`
+1. We are almost done, we only have to generate the report and then show it. Generating the report can be done using the following command
+
+   ```sh
+   cargo cov -- report \
+     --use-color \
+     --ignore-filename-regex='/.cargo/registry' \
+     --instr-profile=./coverage/findip.profdata \
+     --object target/debug/deps/findip_lib-<some_hash> \
+     --object target/debug/deps/findip
+   ```
+
+1. The generated report can be seen using the following command
+
+   ```sh
+   cargo cov -- show \
+     --use-color \
+     --ignore-filename-regex='/.cargo/registry' \
+     --instr-profile=./coverage/findip.profdata \
+     --object target/debug/deps/findip_lib-<some_hash> \
+     --object target/debug/deps/findip
+     --show-instantiations \
+     --show-line-counts-or-regions \
+     --Xdemangler=rustfilt | less -R
+   ```
 
 ## References
 
