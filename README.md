@@ -99,6 +99,15 @@ notifiers:
   - notifierType: stdout
 ```
 
+## Coverage
+
+Okay, so coverage within Rust is a little wild. You have basically 2 options
+
+- use a package called tarpaulin which is a package that only works on linux
+- use the nightly Rust toolchain and use the LLVM-based native instrumentation by setting it up manually and installing a bunch of things.
+
+We are going to use the second option here, set up the nightly toolchain and install the required things to make the coverage work. The guide is linked in the references section below.
+
 ## References
 
 - [Library and binary in the same Rust project](https://stackoverflow.com/questions/26946646/rust-package-with-both-a-library-and-a-binary)
