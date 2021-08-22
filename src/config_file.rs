@@ -43,11 +43,11 @@ impl fmt::Display for Notifier {
 #[serde(rename_all(deserialize = "camelCase"))]
 pub struct LoggingConfig {
     #[serde(default = "get_default_log_path")]
-    log_file: String,
+    pub log_file: String,
     #[serde(default = "get_default_logging_level")]
-    log_level: LevelFilter,
+    pub log_level: LevelFilter,
     #[serde(default = "get_default_log_decoration")]
-    decorate: bool,
+    pub decorate: bool,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -59,7 +59,7 @@ pub struct ConfigFile {
     notify_on_change_only: bool,
     notifiers: Vec<Notifier>,
     #[serde(default = "get_default_logging_config")]
-    logging_config: LoggingConfig,
+    pub logging_config: LoggingConfig,
 }
 
 pub fn get_default_services() -> Vec<String> {
