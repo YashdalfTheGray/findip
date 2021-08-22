@@ -108,7 +108,7 @@ Okay, so coverage within Rust is a little wild. You have basically 2 options
 
 We are going to use the second option here, set up the nightly toolchain and install the required things to make the coverage work. The guide is linked in the references section below. It is important to note that we're only doing this to get the test coverage but you can also generate runtime coverage. The compiler will inject LLVM counter statements into a binary build as well and output a `.profraw` file.
 
-This process only works (for now) with the Rust nightly toolchain. Accordingly, there is a `rust-toolchain` file with the word `nightly` in it. This tells Cargo to use the nightly toolchain. Then the process is as follows
+This process only works (for now) with the Rust nightly toolchain. Accordingly, there is a `rust-toolchain` file with the word `nightly` in it. A thing to note here is that you need a fairly new nightly to run this as of this writing so it is a good idea to run `rustup update nightly` to bring down the latest nightly before following the steps. This tells Cargo to use the nightly toolchain. Then the process is as follows
 
 1. We have to install the `rustfilt` demangler - `cargo install rustfilt`
 1. Then we have to clean the project - `cargo clean`
