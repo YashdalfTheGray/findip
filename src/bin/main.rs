@@ -41,7 +41,8 @@ pub fn main() {
                 .chain(std::io::stdout())
                 .chain(fern::log_file(config.logging_config.log_file.clone()).unwrap()),
         )
-        .apply();
+        .apply()
+        .expect("Failed to set up the fern dispatch and logging.");
 
     schedule_ip_notification(config);
 }
