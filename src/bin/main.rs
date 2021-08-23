@@ -19,17 +19,23 @@ pub fn main() {
     let config =
         load_config_from_file(matches.value_of("config_file_name").unwrap().to_string()).unwrap();
 
+    let should_decorate = config.logging_config.decorate.clone();
+
     fern::Dispatch::new()
         .chain(
             fern::Dispatch::new()
-                .format(|out, message, record| {
-                    out.finish(format_args!(
-                        "{}[{}][{}] {}",
-                        chrono::Local::now().format("[%Y-%m-%d][%H:%M:%S]"),
-                        record.target(),
-                        record.level(),
-                        message
-                    ))
+                .format(move |out, message, record| {
+                    if should_decorate {
+                        out.finish(format_args!(
+                            "{}[{}][{}] {}",
+                            chrono::Local::now().format("[%Y-%m-%d][%H:%M:%S]"),
+                            record.target(),
+                            record.level(),
+                            message
+                        ))
+                    } else {
+                        out.finish(format_args!("{}", message))
+                    }
                 })
                 .level(config.logging_config.log_level.clone())
                 .chain(std::io::stdout())
