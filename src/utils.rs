@@ -34,17 +34,16 @@ pub fn replace_tokens(original: String, token_value_map: HashMap<String, String>
 
 pub fn generate_error_file_path(log_file_path: String) -> String {
     let error_file_path = Path::new(&log_file_path);
+    let file_stem = error_file_path
+        .file_stem()
+        .unwrap()
+        .to_str()
+        .unwrap()
+        .to_owned();
+    let extension = error_file_path.extension().unwrap().to_str().unwrap();
 
     error_file_path
-        .with_file_name(
-            error_file_path
-                .file_name()
-                .unwrap()
-                .to_str()
-                .unwrap()
-                .to_owned()
-                + ".errors",
-        )
+        .with_file_name(file_stem + ".errors." + extension)
         .as_os_str()
         .to_str()
         .unwrap()
@@ -95,5 +94,33 @@ mod tests {
 
         let result = replace_tokens(original, token_value_map);
         assert_eq!(result, "test string with token value 1 and token value 2!");
+    }
+
+    #[test]
+    fn test_generate_error_file_path_with_just_file_name() {
+        let log_file_path = "output.log".to_string();
+        let error_file_path = generate_error_file_path(log_file_path);
+        assert_eq!(error_file_path, "output.errors.log".to_string());
+    }
+
+    #[test]
+    fn test_generate_error_file_path_with_relative_path() {
+        let log_file_path = "var/logs/output.log".to_string();
+        let error_file_path = generate_error_file_path(log_file_path);
+        assert_eq!(error_file_path, "var/logs/output.errors.log".to_string());
+    }
+
+    #[test]
+    fn test_generate_error_file_path_with_absolute_path() {
+        let log_file_path = "/tmp/logs/output.log".to_string();
+        let error_file_path = generate_error_file_path(log_file_path);
+        assert_eq!(error_file_path, "/tmp/logs/output.errors.log".to_string());
+    }
+
+    #[test]
+    fn test_generate_error_file_path_with_dots() {
+        let log_file_path = "./logs/output.log".to_string();
+        let error_file_path = generate_error_file_path(log_file_path);
+        assert_eq!(error_file_path, "./logs/output.errors.log".to_string());
     }
 }
