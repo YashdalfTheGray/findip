@@ -21,8 +21,8 @@ pub fn main() {
 
     let should_decorate = config.logging_config.decorate.clone();
 
-    fern::Dispatch::new()
-        .chain(
+    {
+        let this = fern::Dispatch::new().chain(
             fern::Dispatch::new()
                 .format(move |out, message, record| {
                     if should_decorate {
@@ -40,9 +40,15 @@ pub fn main() {
                 .level(config.logging_config.log_level.clone())
                 .chain(std::io::stdout())
                 .chain(fern::log_file(config.logging_config.log_file.clone()).unwrap()),
-        )
-        .apply()
-        .expect("Failed to set up the fern dispatch and logging.");
+        );
+        let (max_level, log) = this.into_log();
+
+        log::set_boxed_logger(log)?;
+        log::set_max_level(max_level);
+
+        Ok(())
+    }
+    .expect("Failed to set up the fern dispatch and logging.");
 
     schedule_ip_notification(config);
 }
