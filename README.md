@@ -146,6 +146,7 @@ This process only works (for now) with the Rust nightly toolchain. Accordingly, 
 - [`Cargo.toml` format](https://doc.rust-lang.org/cargo/reference/manifest.html)
 - [`clap` docs](https://docs.rs/clap/2.33.3/clap/)
 - [`cron_parser` docs](https://docs.rs/cron-parser/0.7.9/cron_parser/)
+- [`fern` docs](https://docs.rs/fern/0.6.0/fern/)
 - [`reqwest` docs](https://docs.rs/reqwest/0.11.3/reqwest/index.html)
 - [`rusoto` docs](https://www.rusoto.org/)
 - [`serde` docs](https://serde.rs/)
