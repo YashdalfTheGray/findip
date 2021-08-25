@@ -1,5 +1,6 @@
 use std::{
     collections::HashMap,
+    path::Path,
     time::{SystemTime, UNIX_EPOCH},
 };
 
@@ -29,6 +30,25 @@ pub fn replace_tokens(original: String, token_value_map: HashMap<String, String>
     token_value_map
         .iter()
         .fold(result, |acc, (key, value)| acc.replace(key, value))
+}
+
+pub fn generate_error_file_path(log_file_path: String) -> String {
+    let error_file_path = Path::new(&log_file_path);
+
+    error_file_path
+        .with_file_name(
+            error_file_path
+                .file_name()
+                .unwrap()
+                .to_str()
+                .unwrap()
+                .to_owned()
+                + ".errors",
+        )
+        .as_os_str()
+        .to_str()
+        .unwrap()
+        .to_string()
 }
 
 #[cfg(test)]
