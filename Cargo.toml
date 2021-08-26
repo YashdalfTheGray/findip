@@ -17,6 +17,7 @@ path = "src/bin/main.rs"
 
 [dependencies]
 async-trait = "0.1.51"
+aws-arn = "0.2.0"
 clap = "2.33.3"
 chrono = "0.4"
 dotenv = "0.15.0"
