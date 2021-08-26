@@ -1,6 +1,7 @@
 use http::HeaderMap;
 use log::LevelFilter;
 use reqwest::Method;
+use rusoto_core::Region;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, error::Error, fmt, fs::read_to_string};
 
@@ -18,7 +19,7 @@ pub enum Notifier {
         access_key_id: String,
         secret_access_key: String,
         assume_role_arn: String,
-        region: String,
+        region: Region,
         bucket_name: String,
     },
     #[serde(rename_all(deserialize = "camelCase"))]
@@ -143,7 +144,7 @@ mod tests {
             assert_eq!(access_key_id, "something");
             assert_eq!(secret_access_key, "shhh");
             assert_eq!(assume_role_arn, "roleArn");
-            assert_eq!(region, "us-west-2");
+            assert_eq!(*region, Region::UsWest2);
             assert_eq!(bucket_name, "bucketName");
             Ok(())
         } else {
@@ -152,7 +153,7 @@ mod tests {
                     access_key_id: "".to_owned(),
                     secret_access_key: "".to_owned(),
                     assume_role_arn: "".to_owned(),
-                    region: "".to_owned(),
+                    region: Region::UsWest2,
                     bucket_name: "".to_owned(),
                 },
             }))
