@@ -5,6 +5,6 @@ notifiers:
     properties:
       accessKeyId: something
       secretAccessKey: shhh
-      assumeRoleArn: roleArn
+      assumeRoleArn: arn:aws:iam::123456789012:role/namespace/assume-role
       region: us-west-2
       bucketName: bucketName

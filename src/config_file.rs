@@ -1,3 +1,4 @@
+use aws_arn::ARN;
 use http::HeaderMap;
 use log::LevelFilter;
 use reqwest::Method;
@@ -5,7 +6,7 @@ use rusoto_core::Region;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, error::Error, fmt, fs::read_to_string};
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all(deserialize = "camelCase"))]
 #[serde(tag = "notifierType", content = "properties")]
 pub enum Notifier {
@@ -18,7 +19,7 @@ pub enum Notifier {
     S3 {
         access_key_id: String,
         secret_access_key: String,
-        assume_role_arn: String,
+        assume_role_arn: ARN,
         region: Region,
         bucket_name: String,
     },
@@ -102,6 +103,7 @@ pub fn load_config_from_file(file_path: String) -> Result<ConfigFile, Box<dyn Er
 mod tests {
     use std::error::Error;
     use std::fmt;
+    use std::str::FromStr;
 
     use super::*;
 
@@ -143,7 +145,10 @@ mod tests {
         {
             assert_eq!(access_key_id, "something");
             assert_eq!(secret_access_key, "shhh");
-            assert_eq!(assume_role_arn, "roleArn");
+            assert_eq!(
+                assume_role_arn.to_string(),
+                "arn:aws:iam::123456789012:role/namespace/assume-role"
+            );
             assert_eq!(*region, Region::UsWest2);
             assert_eq!(bucket_name, "bucketName");
             Ok(())
@@ -152,7 +157,10 @@ mod tests {
                 expected: Notifier::S3 {
                     access_key_id: "".to_owned(),
                     secret_access_key: "".to_owned(),
-                    assume_role_arn: "".to_owned(),
+                    assume_role_arn: ARN::from_str(
+                        "arn:aws:iam::123456789012:role/namespace/assume-role",
+                    )
+                    .unwrap(),
                     region: Region::UsWest2,
                     bucket_name: "".to_owned(),
                 },
