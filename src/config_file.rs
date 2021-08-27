@@ -5,6 +5,7 @@ use reqwest::Method;
 use rusoto_core::Region;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, error::Error, fmt, fs::read_to_string};
+use validator::Validate;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all(deserialize = "camelCase"))]
@@ -41,7 +42,7 @@ impl fmt::Display for Notifier {
     }
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Validate)]
 #[serde(rename_all(deserialize = "camelCase"))]
 pub struct LoggingConfig {
     #[serde(default = "get_default_log_path")]
@@ -52,13 +53,15 @@ pub struct LoggingConfig {
     pub decorate: bool,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize, Validate)]
 #[serde(rename_all(deserialize = "camelCase"))]
 pub struct ConfigFile {
     cron: String,
     #[serde(default = "get_default_services")]
+    #[validate(length(min = 1))]
     services: Vec<String>,
     notify_on_change_only: bool,
+    #[validate(length(equal = 1))]
     notifiers: Vec<Notifier>,
     #[serde(default = "get_default_logging_config")]
     pub logging_config: LoggingConfig,
