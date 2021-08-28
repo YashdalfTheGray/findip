@@ -3,8 +3,8 @@ use http::HeaderMap;
 use log::LevelFilter;
 use reqwest::Method;
 use rusoto_core::Region;
-use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, error::Error, fmt, fs::read_to_string};
+use serde::{Deserialize, Deserializer, Serialize};
+use std::{collections::HashMap, error::Error, fmt, fs::read_to_string, str::FromStr};
 use validator::Validate;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
@@ -100,6 +100,14 @@ pub fn load_config_from_file(file_path: String) -> Result<ConfigFile, Box<dyn Er
     let contents = read_to_string(file_path)?;
     let config_file: ConfigFile = serde_yaml::from_str(&contents)?;
     Ok(config_file)
+}
+
+fn deserialize_arn_from_string<'de, D>(deserializer: D) -> Result<ARN, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let input = String::deserialize(deserializer)?;
+    ARN::from_str(&input).map_err(serde::de::Error::custom)
 }
 
 #[cfg(test)]
