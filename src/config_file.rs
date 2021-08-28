@@ -20,6 +20,7 @@ pub enum Notifier {
     S3 {
         access_key_id: String,
         secret_access_key: String,
+        #[serde(deserialize_with = "deserialize_arn_from_string")]
         assume_role_arn: ARN,
         region: Region,
         bucket_name: String,
