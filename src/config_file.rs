@@ -22,6 +22,7 @@ pub enum Notifier {
         secret_access_key: String,
         #[serde(deserialize_with = "deserialize_arn_from_string")]
         assume_role_arn: ARN,
+        #[serde(deserialize_with = "deserialize_region_from_string")]
         region: Region,
         bucket_name: String,
     },
@@ -109,6 +110,14 @@ where
 {
     let input = String::deserialize(deserializer)?;
     ARN::from_str(&input).map_err(serde::de::Error::custom)
+}
+
+fn deserialize_region_from_string<'de, D>(deserializer: D) -> Result<Region, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let input = String::deserialize(deserializer)?;
+    Region::from_str(&input).map_err(serde::de::Error::custom)
 }
 
 #[cfg(test)]
