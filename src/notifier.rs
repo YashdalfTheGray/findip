@@ -2,7 +2,7 @@ use std::{collections::HashMap, fs, io::Write, net::IpAddr};
 
 use chrono::Utc;
 use http::HeaderMap;
-use log::{debug, error};
+use log::{debug, error, info};
 use reqwest::{Client, Method, Response};
 use rusoto_core::Region;
 use rusoto_s3::{PutObjectRequest, StreamingBody, S3};
@@ -194,5 +194,19 @@ impl IpNotifier for RestNotifier {
                 IpError::new(ErrorReason::RestRequestFailed(err.to_string())),
             ),
         }
+    }
+}
+
+pub struct StdoutNotifier {}
+
+impl StdoutNotifier {
+    pub fn new() -> StdoutNotifier {
+        StdoutNotifier {}
+    }
+}
+
+impl IpNotifier for StdoutNotifier {
+    fn notify_success(&self, ip: IpAddr) {
+        info!("{}", ip);
     }
 }
