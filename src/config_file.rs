@@ -59,16 +59,16 @@ pub struct LoggingConfig {
 #[derive(Debug, Clone, Deserialize, Validate)]
 #[serde(rename_all(deserialize = "camelCase"))]
 pub struct ConfigFile {
-    cron: String,
+    pub cron: String,
     #[serde(default = "get_default_services")]
     #[validate(length(
         min = 1,
         message = "At least 1 service to get the IP address must be provided"
     ))]
-    services: Vec<String>,
-    notify_on_change_only: bool,
+    pub services: Vec<String>,
+    pub notify_on_change_only: bool,
     #[validate(length(equal = 1))]
-    notifiers: Vec<Notifier>,
+    pub notifiers: Vec<Notifier>,
     #[serde(default = "get_default_logging_config")]
     pub logging_config: LoggingConfig,
 }
