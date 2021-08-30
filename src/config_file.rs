@@ -48,6 +48,7 @@ impl fmt::Display for Notifier {
 #[serde(rename_all(deserialize = "camelCase"))]
 pub struct LoggingConfig {
     #[serde(default = "get_default_log_path")]
+    #[validate(length(min = 1, message = "A path for the log file must be provided"))]
     pub log_file: String,
     #[serde(default = "get_default_logging_level")]
     pub log_level: LevelFilter,
@@ -60,7 +61,10 @@ pub struct LoggingConfig {
 pub struct ConfigFile {
     cron: String,
     #[serde(default = "get_default_services")]
-    #[validate(length(min = 1))]
+    #[validate(length(
+        min = 1,
+        message = "At least 1 service to get the IP address must be provided"
+    ))]
     services: Vec<String>,
     notify_on_change_only: bool,
     #[validate(length(equal = 1))]
@@ -101,6 +105,7 @@ pub fn get_default_log_decoration() -> bool {
 pub fn load_config_from_file(file_path: String) -> Result<ConfigFile, Box<dyn Error + 'static>> {
     let contents = read_to_string(file_path)?;
     let config_file: ConfigFile = serde_yaml::from_str(&contents)?;
+    config_file.validate()?;
     Ok(config_file)
 }
 
