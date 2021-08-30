@@ -4,6 +4,7 @@ use dotenv::dotenv;
 use findip_lib::{
     config_file::load_config_from_file, schedule_ip_notification, utils::generate_error_file_path,
 };
+use log::debug;
 
 pub fn main() {
     dotenv().ok();
@@ -61,6 +62,9 @@ pub fn main() {
         )
         .apply()
         .expect("Failed to set up the fern dispatch and logging.");
+
+    debug!("Full configuration");
+    debug!("{:#?}", config.clone());
 
     schedule_ip_notification(config);
 }
