@@ -49,20 +49,40 @@ The executable takes a YAML based config file using the `--config-file-name` or 
 
 It also includes details about configuring the notifiers, like the credentials to use for S3, the file name to write to in case of the text file notifier, or the REST API endpoint to call with the detials.
 
-Eventually, this config file will be able to support multiple notifiers running concurrently but for now, you're limited to choosing one.
+Eventually, this config file will be able to support multiple notifiers running concurrently but for now, you're limited to choosing one. The required keys are as follows:
+
+```yaml
+cron: (cron expression)
+notifyOnChangeOnly: true|false
+notifiers:
+  - notifierType: s3|file|restApi|stdout
+    properties: (see below)
+```
 
 The config file supports some other configuration options as well like where to put the logs and which services to use to find the IP address to report. These keys are mentioned here because they are optional and defaults will be loaded for them as necessary when the config file is parsed in.
 
-### Example with all the notifiers
+The defaults for the `services` key are
+
+```yaml
+services:
+  - https://api.ipify.org/"
+  - https://diagnostic.opendns.com/myip
+```
+
+The defaults for the `logging_config` key is
+
+```yaml
+logging_config:
+  log_file: /tmp/ip_notifier.log,
+  log_level: info,
+  decorate: true,
+```
+
+### Notifiers
 
 As stated above, at least for now, this config file is not valid because it uses more than one notifier but it is useful as a way to show how the config file is structured and what options are available. This example notifies every 12 hours and even if there isn't a change to the IP address. This configuration also includes an optional key called `services` if you wanted to customize what services to use to check for the host's public IP address.
 
 ```yaml
----
-cron: '0 0 */12 ? * *'
-notifyOnChangeOnly: false
-services:
-  - https://api.ipify.org/
 notifiers:
   - notifierType: s3
     properties:
