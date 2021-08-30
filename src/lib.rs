@@ -1,4 +1,6 @@
-use std::net::{IpAddr, Ipv4Addr};
+use log::{error, info};
+
+use crate::ip_query::IpQueryParams;
 
 pub mod config_file;
 pub mod errors;
@@ -8,11 +10,15 @@ pub mod notifier;
 pub mod sdk;
 pub mod utils;
 
-pub fn find_external_ip(_config: config_file::ConfigFile) -> std::net::IpAddr {
-    IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1))
-}
-
 pub fn schedule_ip_notification(config: config_file::ConfigFile) {
-    println!("{:?}", config);
-    println!("{:?}", find_external_ip(config))
+    match ip_query::run_ip_query(IpQueryParams {
+        services: config.services.clone(),
+    }) {
+        Ok(ip_result) => {
+            info!("{:?}", ip_result);
+        }
+        Err(e) => {
+            error!("{:?}", e);
+        }
+    };
 }
