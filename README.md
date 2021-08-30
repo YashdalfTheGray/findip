@@ -41,7 +41,9 @@ There are a few built in notifiers
 - Text file - output the external IP to a text file
 - Console output - just print the external IP to the console
 
-The trait has an option to notify on some kind of schedule or notify only when there is a change.
+The trait has an option to notify on some kind of schedule and optionally, notify only when there is a change.
+
+## Config file structure
 
 The executable takes a YAML based config file using the `--config-file-name` or `-c` flag. This config file declares how often the check is run, what notifier is used and whether the notifier runs only when changes are detected or every time.
 
@@ -49,7 +51,7 @@ It also includes details about configuring the notifiers, like the credentials t
 
 Eventually, this config file will be able to support multiple notifiers running concurrently but for now, you're limited to choosing one.
 
-## Config file structure
+The config file supports some other configuration options as well like where to put the logs and which services to use to find the IP address to report. These keys are mentioned here because they are optional and defaults will be loaded for them as necessary when the config file is parsed in.
 
 ### Example with all the notifiers
 
@@ -99,7 +101,7 @@ notifiers:
   - notifierType: stdout
 ```
 
-## Coverage
+## Coverage (this method doesn't work, need to figure out something else)
 
 Okay, so coverage within Rust is a little wild. You have basically 2 options
 
