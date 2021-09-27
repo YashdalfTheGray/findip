@@ -1,4 +1,4 @@
-FROM rust:latest
+FROM clux/muslrust
 
 WORKDIR /usr/
 RUN rustup target add x86_64-unknown-linux-musl
