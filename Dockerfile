@@ -1,4 +1,4 @@
-FROM clux/muslrust
+FROM clux/muslrust:stable as builder
 
 WORKDIR /usr/
 RUN rustup target add x86_64-unknown-linux-musl
@@ -12,3 +12,9 @@ RUN cargo build --release
 RUN rm -rf /usr/findip/src
 COPY src/ ./src
 RUN cargo install --target x86_64-unknown-linux-musl --path .
+
+FROM scratch
+COPY --from=builder /usr/local/cargo/bin/findip .
+COPY testfiles/stdout.yml .
+USER 1000
+CMD ["./findip", "--config-file", "./findip-config.yml"]
