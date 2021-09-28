@@ -15,6 +15,6 @@ RUN cargo install --target x86_64-unknown-linux-musl --path .
 
 FROM scratch
 COPY --from=builder /usr/findip/target/x86_64-unknown-linux-musl/release/findip .
-COPY testfiles/stdout.yml .
+COPY testfiles/stdout.yml ./findip-config.yml
 USER 1000
-CMD ["./findip", "--config-file", "./findip-config.yml"]
+CMD ["./findip", "--config-file-name", "findip-config.yml"]
