@@ -1,20 +1,21 @@
-FROM clux/muslrust:stable as builder
+FROM clux/muslrust:stable as base
 
-WORKDIR /usr/
+RUN cargo install cargo-chef
+WORKDIR /usr/app
+
+FROM base as planner
+COPY . .
+RUN cargo chef prepare --recipe-path findip-recipe.json
+
+FROM base as builder
+COPY --from=planner /usr/app/findip-recipe.json recipe.json
+RUN cargo chef cook --release --recipe-path recipe.json
+COPY . .
 RUN rustup target add x86_64-unknown-linux-musl
-
-RUN USER=root cargo new findip --lib
-RUN mkdir -p /usr/findip/src/bin && touch /usr/findip/src/bin/main.rs && echo "pub fn main() {}" > /usr/findip/src/bin/main.rs
-WORKDIR /usr/findip
-COPY Cargo.toml Cargo.lock ./
-RUN cargo build --release
-
-RUN rm -rf /usr/findip/src
-COPY src/ ./src
-RUN cargo install --target x86_64-unknown-linux-musl --path .
+RUN cargo install --target x86_64-unknown-linux-musl --path . --root /usr/build
 
 FROM scratch
-COPY --from=builder /usr/findip/target/x86_64-unknown-linux-musl/release/findip .
+COPY --from=builder /usr/build/bin/findip .
 COPY testfiles/stdout.yml ./findip-config.yml
 USER 1000
 CMD ["./findip", "--config-file-name", "findip-config.yml"]
