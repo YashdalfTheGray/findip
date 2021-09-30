@@ -19,6 +19,7 @@ pub fn main() {
     .get_matches();
 
     println!("{:#?}", matches.args);
+    println!("{:#?}", matches.value_of("config_file_name").unwrap());
     let config =
         load_config_from_file(matches.value_of("config_file_name").unwrap().to_string()).unwrap();
 
