@@ -1,6 +1,7 @@
 use std::{
     hash::Hash,
     net::{IpAddr, Ipv4Addr},
+    str::FromStr,
 };
 
 use indexmap::IndexSet;
@@ -28,7 +29,10 @@ pub fn run_ip_query(params: IpQueryParams) -> Result<IpAddr, IpError> {
         return Err(IpError::new(ErrorReason::IpConflict(ips.clone())));
     }
 
-    Ok(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)))
+    match Ipv4Addr::from_str(&uniq_ips[0]) {
+        Ok(ip) => Ok(IpAddr::V4(ip)),
+        Err(e) => Err(IpError::new(ErrorReason::IpParseFailed(e.to_string()))),
+    }
 }
 
 fn uniq<T: Eq + Hash>(mut v: Vec<T>) -> Vec<T> {
