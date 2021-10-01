@@ -5,6 +5,15 @@ use std::{
 };
 
 use chrono::prelude::*;
+use clap::ArgMatches;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum VerbosityLevel {
+    Standard,
+    Verbose = 1,
+    PrettyNoisy,
+    LiterallyEverything,
+}
 
 pub fn get_time_in_millis() -> u128 {
     let start = SystemTime::now();
@@ -48,6 +57,15 @@ pub fn generate_error_file_path(log_file_path: String) -> String {
         .to_str()
         .unwrap()
         .to_string()
+}
+
+pub fn get_verbosity(matches: &ArgMatches) -> VerbosityLevel {
+    match matches.occurrences_of("verbose") {
+        0 => VerbosityLevel::Standard,
+        1 => VerbosityLevel::Verbose,
+        2 => VerbosityLevel::PrettyNoisy,
+        3..=u64::MAX => VerbosityLevel::LiterallyEverything,
+    }
 }
 
 #[cfg(test)]
