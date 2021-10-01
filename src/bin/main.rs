@@ -2,7 +2,9 @@ use clap::{clap_app, crate_authors};
 use dotenv::dotenv;
 
 use findip_lib::{
-    config_file::load_config_from_file, schedule_ip_notification, utils::generate_error_file_path,
+    config_file::load_config_from_file,
+    schedule_ip_notification,
+    utils::{generate_error_file_path, get_verbosity, VerbosityLevel},
 };
 use log::debug;
 
@@ -18,8 +20,11 @@ pub fn main() {
     )
     .get_matches();
 
-    println!("{:#?}", matches.args);
-    println!("{:#?}", matches.value_of("config_file_name").unwrap());
+    if get_verbosity(&matches) as u32 >= VerbosityLevel::Verbose as u32 {
+        println!("Passed in arguments");
+        println!("{:#?}", matches.args);
+    }
+
     let config =
         load_config_from_file(matches.value_of("config_file_name").unwrap().to_string()).unwrap();
 
