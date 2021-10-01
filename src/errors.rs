@@ -9,6 +9,7 @@ pub enum ErrorReason {
     FileOpenFailed(String),
     S3WriteFailed(String),
     RestRequestFailed(String),
+    IpParseFailed(String),
     Generic(String),
 }
 
@@ -35,6 +36,7 @@ impl fmt::Display for IpError {
             ErrorReason::FileOpenFailed(file) => write!(f, "Failed to open file at path {}", file),
             ErrorReason::S3WriteFailed(reason) => write!(f, "Failed to write IP address to S3. Reason: {}", reason),
             ErrorReason::RestRequestFailed(reason) => write!(f, "Failed to make a REST request. Reason: {}", reason),
+            ErrorReason::IpParseFailed(reason) => write!(f, "Failed to parse IP address. Reason: {}", reason),
             ErrorReason::Generic(context) => write!(f, "An error was encountered. Context: {}", context),
         }
     }
