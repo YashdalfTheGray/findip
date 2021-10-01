@@ -16,4 +16,4 @@ ARG CONFIG_FILE=testfiles/stdout.yml
 COPY --from=builder /usr/build/bin/findip .
 COPY $CONFIG_FILE ./findip-config.yml
 USER 1000
-ENTRYPOINT ["./findip", "--verbose", "--config-file-name", "findip-config.yml"]
+ENTRYPOINT ["./findip", "-vv", "--config-file-name", "findip-config.yml"]
