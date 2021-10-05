@@ -1,16 +1,21 @@
 FROM clux/muslrust:stable as builder
 
+# Setup the working directory and install the rust musl target
 WORKDIR /usr/
 RUN rustup target add x86_64-unknown-linux-musl
 
+# create a new rust project
 RUN USER=root cargo new findip --lib
 WORKDIR /usr/findip
 
+# Copy over the dependency graph and the code
 COPY Cargo.toml Cargo.lock ./
 COPY src/ ./src
 
+# Build for static linking
 RUN cargo install --target x86_64-unknown-linux-musl --path . --root /usr/build
 
+# Copy the right file and config, set user to not root, and run
 FROM scratch
 ARG CONFIG_FILE=testfiles/stdout.yml
 COPY --from=builder /usr/build/bin/findip .
