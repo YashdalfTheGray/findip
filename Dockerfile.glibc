@@ -7,7 +7,9 @@ WORKDIR /usr/
 # this helps Docker cache this layer and our subsequent compilation
 # will be faster because it will just compile the code changes
 RUN USER=root cargo new findip --lib
-RUN mkdir -p /usr/findip/src/bin && touch /usr/findip/src/bin/main.rs && echo "pub fn main() {}" > /usr/findip/src/bin/main.rs
+RUN mkdir -p /usr/findip/src/bin \
+  && touch /usr/findip/src/bin/main.rs \
+  && echo "pub fn main() { println!(\"wrong binary!\"); }" > /usr/findip/src/bin/main.rs
 WORKDIR /usr/findip
 
 # copy over the dependency graph and prelim build
@@ -24,4 +26,4 @@ FROM debian:bullseye-slim
 COPY --from=builder /usr/findip/target/release/findip .
 COPY testfiles/stdout.yml ./findip-config.yml
 USER 1000
-CMD ["./findip", "--config-file-name", "findip-config.yml"]
+ENTRYPOINT ["./findip", "--config-file-name", "findip-config.yml"]
