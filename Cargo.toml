@@ -1,6 +1,6 @@
 [package]
 name = "findip"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["Yash Kulshrestha <yash.kulshrestha@gmail.com>"]
 edition = "2018"
 
