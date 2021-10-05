@@ -1,0 +1,27 @@
+FROM rust:latest as builder
+
+# Setup the working directory
+WORKDIR /usr/
+
+# Create a new rust project and put some dummy code in there
+# this helps Docker cache this layer and our subsequent compilation
+# will be faster because it will just compile the code changes
+RUN USER=root cargo new findip --lib
+RUN mkdir -p /usr/findip/src/bin && touch /usr/findip/src/bin/main.rs && echo "pub fn main() {}" > /usr/findip/src/bin/main.rs
+WORKDIR /usr/findip
+
+# copy over the dependency graph and prelim build
+COPY Cargo.toml Cargo.lock ./
+RUN cargo build --release
+
+# inject our actual code in and run a release
+RUN rm -rf /usr/findip/src
+COPY src/ ./src
+RUN cargo build --release
+
+# Copy the right file and config, set user to not root, and run
+FROM debian:bullseye-slim
+COPY --from=builder /usr/findip/target/release/findip .
+COPY testfiles/stdout.yml ./findip-config.yml
+USER 1000
+CMD ["./findip", "--config-file-name", "findip-config.yml"]
