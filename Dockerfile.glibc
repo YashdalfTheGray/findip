@@ -7,9 +7,9 @@ WORKDIR /usr/
 # this helps Docker cache this layer and our subsequent compilation
 # will be faster because it will just compile the code changes
 RUN USER=root cargo new findip --lib
-RUN mkdir -p /usr/findip/src/bin \
-  && touch /usr/findip/src/bin/main.rs \
-  && echo "pub fn main() { println!(\"wrong binary!\"); }" > /usr/findip/src/bin/main.rs
+RUN mkdir -p findip/src/bin \
+  && touch findip/src/bin/main.rs \
+  && echo "pub fn main() { println!(\"wrong binary!\"); }" > findip/src/bin/main.rs
 WORKDIR /usr/findip
 
 # copy over the dependency graph and prelim build
@@ -17,8 +17,8 @@ COPY Cargo.toml Cargo.lock ./
 RUN cargo build --release
 
 # inject our actual code in and run a release
-RUN rm -rf --verbose ./src/bin ./target/release/deps/findip-*
-COPY ./src ./src
+RUN rm -rf --verbose src/bin target/release/deps/findip-*
+COPY src src/
 RUN cargo build --release
 
 # Copy the right file and config, set user to not root, and run
