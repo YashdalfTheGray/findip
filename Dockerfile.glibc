@@ -1,14 +1,16 @@
-FROM rust:latest as builder
+FROM lukemathwalker/cargo-chef:latest-rust-1.53.0 AS chef
 
 # Setup the working directory
-WORKDIR /usr/
-
-# Create a new rust project
-RUN USER=root cargo new findip --lib
 WORKDIR /usr/findip
 
-# copy over the dependency graph and build
-COPY Cargo.toml Cargo.lock ./
+FROM chef AS planner
+COPY . .
+RUN cargo chef prepare --recipe-path recipe.json
+
+FROM chef AS builder
+WORKDIR /usr/findip
+COPY --from=planner /usr/findip/recipe.json recipe.json
+RUN cargo chef cook --release --recipe-path recipe.json
 COPY src src/
 RUN cargo build --bin findip --release
 
