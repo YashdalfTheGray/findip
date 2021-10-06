@@ -3,23 +3,14 @@ FROM rust:latest as builder
 # Setup the working directory
 WORKDIR /usr/
 
-# Create a new rust project and put some dummy code in there
-# this helps Docker cache this layer and our subsequent compilation
-# will be faster because it will just compile the code changes
+# Create a new rust project
 RUN USER=root cargo new findip --lib
-RUN mkdir -p findip/src/bin \
-  && touch findip/src/bin/main.rs \
-  && echo "pub fn main() { println!(\"wrong binary!\"); }" > findip/src/bin/main.rs
 WORKDIR /usr/findip
 
-# copy over the dependency graph and prelim build
+# copy over the dependency graph and build
 COPY Cargo.toml Cargo.lock ./
-RUN cargo build --release
-
-# inject our actual code in and run a release
-RUN rm -rf --verbose src/bin target/release/deps/findip-*
 COPY src src/
-RUN cargo build --release
+RUN cargo build --bin findip --release
 
 # Copy the right file and config, set user to not root, and run
 FROM debian:bullseye-slim
