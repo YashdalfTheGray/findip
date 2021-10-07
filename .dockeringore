@@ -2,6 +2,8 @@
 coverage/**/*
 *.profraw
 *.profdata
+target/**
+Dockerfile*
 
 # File created using '.gitignore Generator' for Visual Studio Code: https://bit.ly/vscode-gig
 
