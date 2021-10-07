@@ -15,6 +15,8 @@ The built binaries can be found within the target folder, under either `debug` f
 
 Because the library is used by the binary in this project, building the binary also builds the library parts of the code but, in case building both is necessary for some reason, a simple `cargo build` will build both things. And sticking the `--release` flag after the command will build everything for release.
 
+This project also contains a couple of `Dockefile`s, `Dockerfile.glibc` and `Dockerfile.musl`. They both use multistage builds to reduce the image size and the `Dockerfile.musl` tries to statically link everything that is necessary so that it can run basically in the `scratch` container. As expected, the `glibc` version is dynamically linked and requires some kind of OS to run, we've picked `debian:bullseye-slim` as the base image. Currently the musl variant has trouble reading the config file so it is not in use. The `Dockerfile` in the project tree is just symlinked to one of the files, currently `Dockerfile.glibc`.
+
 ## What is this?
 
 It is a utility that finds the external IP address of the node that it is running on. It's supposed to be as lightweight as possible and supposed to run as a service or Docker container.
